@@ -1,0 +1,16 @@
+{% extends "layout/basic.html" %}
+
+{% load bootstrap4 %}
+{% block title %}
+    {{ sub.title }}Дополнительный материал - Профиль пользователя
+{% endblock %}
+
+{% block content %}
+    <h2>Загрузка, изменение, удаление дополнительных материалов</h2>
+    <form method="post" enctype="multipart/form-data">
+        {% csrf_token %}
+        {% bootstrap_formset formset layout='horizontal' %}
+        {% buttons submit='Сохранить' %}{% endbuttons %}
+    </form>
+    <p><a href="{% url 'main:profile_sub_detail' sub.pk %}">Назад</a></p>
+{% endblock %}

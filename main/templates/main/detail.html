@@ -1,0 +1,85 @@
+{% extends "layout/basic.html" %}
+
+{% load bootstrap4 %}
+
+{% block title %}
+    {{ bb.title }} - {{ bb.group.name }}
+{% endblock %}
+{% block content %}
+    <div class="container-fluid mt-3">
+        <div class="row">
+            {% if bb.image %}
+                <div class="col-md-auto"><img src="{{ bb.image.url }}" class="main-image">
+                    {% if bb.author.first_name and bb.author.last_name %}
+                        <p>Автор: {{ bb.author.first_name }} {{ bb.author.last_name }}</p>
+                    {% else %}
+                        <p class="text-right font-italic">Автор: {{ bb.author.username }}</p>
+                    {% endif %}
+                </div>
+            {% endif %}
+            <div class="col">
+                <h2>{{ bb.title }}</h2>
+                <p>{{ bb.content }}</p>
+                <p class="text-right font-italic">Объявление добавлено
+                    {{ bb.created_at }}</p>
+            </div>
+        </div>
+    </div>
+    {% if ais %}
+        <div class="d-flex justify-content-between flex-wrap mt-5">
+            {% for ai in ais %}
+                <div>
+                    <img class="additional-image" src="{{ ai.image.url }}">
+                </div>
+            {% endfor %}
+        </div>
+    {% endif %}
+    <p><a href="{% url 'main:by_group' pk=bb.group.pk %}{{ all }}">Назад</a></p>
+    {% if user.is_authenticated %}
+        <h4 class="mt-5">Новый комментарий</h4>
+        <form method="post">
+            {% csrf_token %}
+            {% bootstrap_form form layout='horizontal' %}
+            {% buttons submit='Добавить' %}{% endbuttons %}
+        </form>
+        {% if comments %}
+            <div class="mt-5">
+                {% for comment in comments %}
+                    <div class="my-2 p-2 border">
+                        <h5>{{ comment.author }}</h5>
+                        <p>{{ comment.content }}</p>
+                        <p class="text-right font-italic">{{ comment.created_at }}</p>
+                        <p class="text-right mt-2">
+                            {% if bb.author.pk == user.pk and comment.author == user.username %}
+                                <a href="{% url 'main:comment_change' group_pk=comment.bb.group.pk bb_pk=comment.bb.pk pk=comment.pk %}">
+                                    Исправить комментарий</a>
+                                <a href="{% url 'main:comment_delete' group_pk=comment.bb.group.pk bb_pk=comment.bb.pk pk=comment.pk %}">
+                                    Удалить комментарий</a>
+                            {% elif comment.author == user.username %}
+                                <a href="{% url 'main:comment_change' group_pk=comment.bb.group.pk bb_pk=comment.bb.pk pk=comment.pk %}">
+                                    Исправить комментарий</a>
+                                <a href="{% url 'main:comment_delete' group_pk=comment.bb.group.pk bb_pk=comment.bb.pk pk=comment.pk %}">
+                                    Удалить комментарий</a>
+                            {% elif bb.author.pk == user.pk %}
+                                <a href="{% url 'main:comment_delete' group_pk=comment.bb.group.pk bb_pk=comment.bb.pk pk=comment.pk %}">
+                                    Удалить комментарий</a>
+                            {% endif %}
+                        </p>
+                    </div>
+                {% endfor %}
+            </div>
+        {% endif %}
+    {% else %}
+        {% if comments %}
+            <div class="mt-5">
+                {% for comment in comments %}
+                    <div class="my-2 p-2 border">
+                        <h5>{{ comment.author }}</h5>
+                        <p>{{ comment.content }}</p>
+                        <p class="text-right font-italic">{{ comment.created_at }}</p>
+                    </div>
+                {% endfor %}
+            </div>
+        {% endif %}
+    {% endif %}
+{% endblock %}

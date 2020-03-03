@@ -1,0 +1,16 @@
+asgiref==3.2.3
+beautifulsoup4==4.8.1
+cffi==1.12.3
+Django==3.0
+django-bootstrap4==1.1.1
+django-cleanup==4.0.0
+django-cors-headers==3.2.1
+djangorestframework==3.11.0
+easy-thumbnails==2.7
+Pillow==7.0.0
+pycparser==2.19
+pytz==2019.3
+soupsieve==1.9.5
+sqlparse==0.3.0
+virtualenv==16.7.5
+virtualenvwrapper-win==1.2.5

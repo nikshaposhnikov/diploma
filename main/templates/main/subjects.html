@@ -1,0 +1,36 @@
+{% extends 'layout/basic.html' %}
+
+{% load thumbnail %}
+{% load static %}
+{% load bootstrap4 %}
+
+{% block title %}
+    Дисциплины пользователя
+{% endblock %}
+
+{% block content %}
+
+    {% if user.first_name and user.last_name %}
+        <p>Дисциплины пользователя {{ user.first_name }} {{ user.last_name }}!</p>
+    {% else %}
+        <p>Дисциплины пользователя {{ user.username }}</p>
+    {% endif %}
+
+    {% if sbs %}
+        <h3>Ваши дисциплины</h3>
+        <ul class="list-unstyled">
+            {% for sb in sbs %}
+                <li class="media my-5 p-3 border">
+                    {% url 'main:profile_sub_detail' pk=sb.pk as url %}
+                    <a href="{{ url }}"></a>
+                    <div class="media-body">
+                        <a href="{{ url }}">{{ sb.name_of_subject }}</a>
+                    </div>
+                </li>
+            {% endfor %}
+        </ul>
+    {% else %}
+        <h3>На данный момент у вас нет дисциплин, которые вы преподаёте. Дождитесь распределения
+            от администратора сайта</h3>
+    {% endif %}
+{% endblock %}

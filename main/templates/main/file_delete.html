@@ -1,0 +1,14 @@
+{% extends "layout/basic.html" %}
+
+{% load bootstrap4 %}
+{% block title %}
+{{ file.file }}Удаление файла
+{% endblock %}
+
+{% block content %}
+<h2>Удалить файл "{{ file.file }}"?</h2>
+<form method="post" enctype="multipart/form-data">
+    {% csrf_token %}
+    {% buttons submit='Удалить' %}{% endbuttons %}
+</form>
+{% endblock %}

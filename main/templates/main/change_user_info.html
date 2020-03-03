@@ -1,0 +1,22 @@
+{% extends 'layout/basic.html' %}
+
+{% load bootstrap4 %}
+
+{% block title %}Правка личных данных{% endblock %}
+
+{% block content %}
+    <h2>Правка личных данных пользователя {{ user.username }}</h2>
+    {% if user.is_teacher %}
+        <form method="post">
+            {% csrf_token %}
+            {% bootstrap_form form layout='horizontal' %}
+            {% buttons submit='Сохранить' %}{% endbuttons %}
+        </form>
+    {% else %}
+    <form method="post">
+        {% csrf_token %}
+        {% bootstrap_form form layout='horizontal' %}
+        {% buttons submit='Сохранить' %}{% endbuttons %}
+    </form>
+    {% endif %}
+{% endblock %}
