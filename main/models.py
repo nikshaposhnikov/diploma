@@ -1,4 +1,9 @@
 import os
+
+from django.core.signing import Signer
+from learnDjango.settings import ALLOWED_HOSTS
+from django.db.models import signals
+from django.core.mail import send_mail, EmailMultiAlternatives
 from django.dispatch import Signal
 from django.db import models
 from django.contrib.auth.models import AbstractUser
@@ -11,7 +16,7 @@ from .utilities import (send_activation_notification, get_timestamp_path, get_na
 
 
 class Subject(models.Model):
-    teacher = models.ForeignKey('AdvUser', on_delete=models.CASCADE, verbose_name='Преподаватель')
+    teacher = models.ForeignKey('Teacher', on_delete=models.SET_NULL, null=True, verbose_name='Преподаватель')
     name_of_subject = models.CharField(max_length=220, verbose_name='Название предмета')
 
     def __str__(self):
@@ -139,6 +144,7 @@ class SubGroup(Group):
         verbose_name_plural = 'Группы'
 
 
+
 user_registrated = Signal(providing_args=['instance'])
 
 
@@ -156,10 +162,47 @@ class AdvUser(AbstractUser):
 
 
     def delete(self, *args, **kwargs):
+        Comment.objects.filter(author=self.username).delete()
         for bb in self.bb_set.all():
             bb.delete()
         super().delete(*args, **kwargs)
 
+
     class Meta(AbstractUser.Meta):
         pass
 
+
+class Teacher(AdvUser):
+    middle_name = models.CharField(max_length=50, db_index=True, verbose_name='Отчество')
+    position = models.CharField(max_length=50, db_index=True, verbose_name='Должность')
+    degree = models.CharField(max_length=100,  blank=True, verbose_name='Степень')
+    rank = models.CharField(max_length=40,  blank=True, verbose_name='Звание')
+
+    class Meta(AbstractUser.Meta):
+        verbose_name_plural = 'Преподаватели'
+        verbose_name = 'Преподаватель'
+        ordering = ['username']
+
+
+def notify_admin(sender, instance, created, **kwargs):
+    '''Оповещает администратора о добавлении нового пользователя.'''
+    if created:
+        signer = Signer()
+        if ALLOWED_HOSTS:
+            host = 'http://' + ALLOWED_HOSTS[0] + '/admin/main/teacher'
+        else:
+            host = 'http://localhost:8000/admin/main/teacher/?q=' + instance.username
+
+            subject = 'Создан новый преподаватель'
+            html_message = '<p>Был зарегистрирован пользователь под логином <strong>%s</strong>.' \
+                           '<p>Активируйте пользователя %s в админ-панели %s, ' \
+                           'если это действительно преподаватель.</p> ' \
+                      % (instance.username, instance.username, host)
+            from_addr = instance.email
+            recipient_list = ('klandodo@gmail.com',)
+            msg = EmailMultiAlternatives(subject, html_message, from_addr, recipient_list)
+            msg.content_subtype = "html"  # Main content is now text/html
+            msg.send()
+
+
+signals.post_save.connect(notify_admin, sender=Teacher)

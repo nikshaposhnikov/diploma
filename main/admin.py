@@ -2,7 +2,7 @@ from django.contrib import admin
 import datetime
 
 from .forms import SubGroupForm
-from .models import AdvUser, SuperGroup, SubGroup, Bb, AdditionalImage, Comment, Subject, AdditionalFile
+from .models import *
 from .utilities import send_activation_notification
 from django.contrib import messages
 
@@ -17,13 +17,15 @@ class SubjectAdmin(admin.ModelAdmin):
     list_display = ('teacher', 'name_of_subject')
     list_display_links = ['name_of_subject']
     search_fields = ('teacher', 'name_of_subject')
-    fields = (('name_of_subject', 'teacher'))
+    fields = ('name_of_subject', 'teacher')
     inlines = (AdditionalFileInline,)
 
     def formfield_for_foreignkey(self, db_field, request, **kwargs):
-        if db_field.name == "teacher":
-            kwargs["queryset"] = AdvUser.objects.filter(is_teacher=True)
-        return super().formfield_for_foreignkey(db_field, request, **kwargs)
+        field = super().formfield_for_foreignkey(db_field, request, **kwargs)
+        if db_field.name == 'teacher':
+            kwargs['queryset'] = Teacher.objects.filter(is_teacher=True)
+            field.label_from_instance = lambda u: f'{u.last_name} {u.first_name} {u.middle_name}'
+        return field
 
 
 admin.site.register(Subject, SubjectAdmin)
@@ -110,16 +112,30 @@ class NonactivatedFilter(admin.SimpleListFilter):
             return queryset.filter(is_active=False, is_activated=False, date_joined__date__lt=d)
 
 
+class TeacherAdmin(admin.ModelAdmin):
+    list_display = ('__str__', 'is_activated', 'date_joined')
+    search_fields = ('username', 'email', 'first_name', 'last_name')
+    list_filter = (NonactivatedFilter,)
+    fields = (('username', 'email'), ('first_name', 'last_name', 'middle_name'),
+              ('send_messages', 'is_active', 'is_activated', 'is_teacher'),
+              ('position', 'degree', 'rank'),
+              ('last_login', 'date_joined'))
+    readonly_fields = ('last_login', 'date_joined')
+    actions = (send_activation_notifications,)
+
+
+admin.site.register(Teacher, TeacherAdmin)
+
+
 class AdvUserAdmin(admin.ModelAdmin):
     list_display = ('__str__', 'is_activated', 'date_joined')
     search_fields = ('username', 'email', 'first_name', 'last_name')
     list_filter = (NonactivatedFilter,)
     fields = (('username', 'email'), ('first_name', 'last_name'),
-              ('send_messages', 'is_active', 'is_activated', 'is_teacher'),
-              ('is_staff', 'is_superuser'),
-              'groups', 'user_permissions',
+              ('send_messages', 'is_active', 'is_activated'),
               ('last_login', 'date_joined'))
     readonly_fields = ('last_login', 'date_joined')
     actions = (send_activation_notifications,)
+
 
 admin.site.register(AdvUser, AdvUserAdmin)

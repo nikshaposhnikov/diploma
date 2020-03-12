@@ -1,11 +1,12 @@
 from django import forms
 from django.contrib.auth import password_validation
+from django.contrib.auth.forms import PasswordResetForm
 from django.core.exceptions import ValidationError
 from django.forms import inlineformset_factory
 from django.forms.formsets import formset_factory
 
 from .models import user_registrated
-from .models import AdvUser, SuperGroup, SubGroup, Bb, AdditionalImage, Comment, Subject, AdditionalFile
+from .models import *
 
 
 class UserCommentForm(forms.ModelForm):
@@ -48,6 +49,14 @@ class SubGroupForm(forms.ModelForm):
         fields = '__all__'
 
 
+class EmailValidationOnForgotPassword(PasswordResetForm):
+    def clean_email(self):
+        email = self.cleaned_data['email']
+        if not AdvUser.objects.filter(email__iexact=email, is_active=True).exists():
+            raise ValidationError("Пользователь с указанным адресом электронной почты не зарегистрирован!")
+        return email
+
+
 class RegisterTeacherForm(forms.ModelForm):
     username = forms.CharField(required=True, label='Логин', widget=forms.TextInput)
     first_name = forms.CharField(required=True, label='Имя', widget=forms.TextInput)
@@ -59,15 +68,16 @@ class RegisterTeacherForm(forms.ModelForm):
     password2 = forms.CharField(label='Пароль (повторно)', widget=forms.PasswordInput,
                                 help_text='Повторите пароль')
     position = forms.CharField(required=True, label='Должность', widget=forms.TextInput)
-    degree = forms.CharField(required=True, label='Степень', widget=forms.TextInput)
-    rank = forms.CharField(required=True, label='Звание', widget=forms.TextInput)
+    degree = forms.CharField(required=False, label='Степень', widget=forms.TextInput)
+    rank = forms.CharField(required=False, label='Звание', widget=forms.TextInput)
+    # is_teacher = forms.BooleanField(required=True, label='Преподаватель')
 
-    # def clean_email(self):
-    #     email = self.cleaned_data['email'].lower()
-    #     list_email = AdvUser.objects.filter(email=email)
-    #     if list_email.count():
-    #         raise ValidationError('Такой email уже зарегистрирован')
-    #     return email
+    def clean_email(self):
+        email = self.cleaned_data['email'].lower()
+        list_email = AdvUser.objects.filter(email=email)
+        if list_email.count():
+            raise ValidationError('Такой email уже зарегистрирован')
+        return email
 
     def clean_username(self):
         username = self.cleaned_data['username'].lower()
@@ -95,11 +105,10 @@ class RegisterTeacherForm(forms.ModelForm):
         user.is_activated = False
         if commit:
             user.save()
-        user_registrated.send(RegisterTeacherForm, instance=user)
         return user
 
     class Meta:
-        model = AdvUser
+        model = Teacher
         fields = ('username', 'email', 'password1', 'password2', 'first_name', 'last_name', 'middle_name',
                   'position', 'degree', 'rank', 'send_messages', 'is_teacher')
 
@@ -115,12 +124,12 @@ class RegisterUserForm(forms.ModelForm):
     password2 = forms.CharField(label='Пароль (повторно)', widget=forms.PasswordInput,
                                 help_text='Повторите пароль')
 
-    # def clean_email(self):
-    #     email = self.cleaned_data['email'].lower()
-    #     list_email = AdvUser.objects.filter(email=email)
-    #     if list_email.count():
-    #         raise ValidationError('Такой email уже зарегистрирован')
-    #     return email
+    def clean_email(self):
+        email = self.cleaned_data['email'].lower()
+        list_email = AdvUser.objects.filter(email=email)
+        if list_email.count():
+            raise ValidationError('Такой email уже зарегистрирован')
+        return email
 
     def clean_username(self):
         username = self.cleaned_data['username'].lower()
@@ -163,17 +172,13 @@ class ChangeTeacherInfoForm(forms.ModelForm):
     last_name = forms.CharField(required=True, label='Фамилия', widget=forms.TextInput)
     middle_name = forms.CharField(required=True, label='Отчество', widget=forms.TextInput)
     email = forms.EmailField(required=True, label='Адрес электронной почты')
-    password1 = forms.CharField(label='Пароль', widget=forms.PasswordInput,
-                                help_text=password_validation.password_validators_help_text_html())
-    password2 = forms.CharField(label='Пароль (повторно)', widget=forms.PasswordInput,
-                                help_text='Повторите пароль')
     position = forms.CharField(required=True, label='Должность', widget=forms.TextInput)
-    degree = forms.CharField(required=True, label='Степень', widget=forms.TextInput)
-    rank = forms.CharField(required=True, label='Звание', widget=forms.TextInput)
+    degree = forms.CharField(required=False, label='Степень', widget=forms.TextInput)
+    rank = forms.CharField(required=False, label='Звание', widget=forms.TextInput)
 
     class Meta:
-        model = AdvUser
-        fields = ('username', 'email', 'password1', 'password2', 'first_name', 'last_name', 'middle_name',
+        model = Teacher
+        fields = ('username', 'email', 'first_name', 'last_name', 'middle_name',
                   'position', 'degree', 'rank', 'send_messages')
 
 

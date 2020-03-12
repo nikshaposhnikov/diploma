@@ -24,6 +24,9 @@ SECRET_KEY = 'hkavh6&qpd^ezb1uokwet9*yf&jx_@g884k*v&d5ps$t5rbx5v'
 # SECURITY WARNING: don't run with debug turned on in production!
 DEBUG = True
 
+if DEBUG:
+    EMAIL_BACKEND = 'django.core.mail.backends.smtp.EmailBackend'
+
 ALLOWED_HOSTS = []
 
 CORS_ORIGIN_ALLOW_ALL = True
@@ -94,7 +97,7 @@ REST_FRAMEWORK = {
 TEMPLATES = [
     {
         'BACKEND': 'django.template.backends.django.DjangoTemplates',
-        'DIRS': [os.path.join(BASE_DIR, 'templates')]
+        'DIRS': [os.path.join(BASE_DIR, 'templates'), os.path.join(BASE_DIR, 'main', 'templates')]
         ,
         'APP_DIRS': True,
         'OPTIONS': {

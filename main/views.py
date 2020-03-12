@@ -6,7 +6,7 @@ from django.http import HttpResponse, Http404, HttpResponseRedirect
 from django.template import TemplateDoesNotExist
 from django.template.loader import get_template
 from django.contrib.auth import logout, authenticate, login
-from django.contrib.auth.views import LoginView, LogoutView, PasswordChangeView
+from django.contrib.auth.views import LoginView, LogoutView, PasswordResetView, PasswordChangeView
 from django.contrib.auth.mixins import LoginRequiredMixin
 from django.contrib.auth.decorators import login_required
 from django.contrib.admin.views.decorators import staff_member_required
@@ -81,6 +81,8 @@ class DeleteUserView(LoginRequiredMixin, DeleteView):
     success_url = reverse_lazy('main:index')
 
     def dispatch(self, request, *args, **kwargs):
+        comments = Comment.objects.filter(author=request.user.username)
+        comments.delete()
         self.user_id = request.user.pk
         return super().dispatch(request, *args, **kwargs)
 
@@ -129,6 +131,12 @@ class RegisterTeacherView(CreateView):
     success_url = reverse_lazy('main:register_done')
 
 
+class BBPasswordResetView(PasswordResetView):
+    template_name = 'main/password_reset.html'
+    success_url = reverse_lazy('main:reset_password_done')
+    success_message = 'Письмо выслано на почту'
+
+
 class BBPasswordChangeView(SuccessMessageMixin, LoginRequiredMixin, PasswordChangeView):
     template_name = 'main/password_change.html'
     success_url = reverse_lazy('main:profile')
@@ -136,11 +144,11 @@ class BBPasswordChangeView(SuccessMessageMixin, LoginRequiredMixin, PasswordChan
 
 
 class ChangeTeacherInfoView(SuccessMessageMixin, LoginRequiredMixin, UpdateView):
-    model = AdvUser
+    model = Teacher
     template_name = 'main/change_user_info.html'
     form_class = ChangeTeacherInfoForm
     success_url = reverse_lazy('main:profile')
-    success_message = 'Личные данные пользователя изменены'
+    success_message = 'Личные данные изменены'
 
     def dispatch(self, request, *args, **kwargs):
         self.user_id = request.user.pk
@@ -262,7 +270,7 @@ def profile_file_add(request, pk):
         formset = AIFormFileSet(request.POST, request.FILES, instance=sub)
         if formset.is_valid():
             formset.save()
-            messages.add_message(request, messages.SUCCESS, 'Материал добавлен')
+            messages.add_message(request, messages.SUCCESS, 'Материал изменён')
             return redirect('main:profile_sub_detail', sub.pk)
     else:
         formset = AIFormFileSet(instance=sub)
@@ -307,8 +315,10 @@ def profile_bb_detail(request, pk):
 @login_required
 def profile(request):
     bbs = Bb.objects.filter(author=request.user.pk)
-    context = {'bbs': bbs}
-    return render(request, 'main/profile.html', context)
+    if request.user.is_teacher:
+        context = {'bbs': bbs}
+        return render(request, 'main/profile.html', context)
+    return render(request, 'main/index.html')
 
 
 @teacher_required
@@ -359,3 +369,11 @@ def index(request):
 
 def error_perm_teach(request):
     return render(request, 'main/teacher_error.html')
+
+
+def reset_password_confirm(request):
+    return render(request, 'registration/password_reset_confirm.html')
+
+
+def reset_password_done(request):
+    return render(request, 'registration/password_reset_done.html')

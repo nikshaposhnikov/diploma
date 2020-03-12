@@ -1,5 +1,6 @@
 from django.urls import path
 from .views import *
+from django.contrib.auth import views as auth_views
 
 app_name = 'main'
 
@@ -10,6 +11,12 @@ urlpatterns = [
     path('accounts/register/', RegisterUserView.as_view(), name='register'),
     path('accounts/logout/', BBLogoutView.as_view(), name='logout'),
     path('accounts/change_password/', BBPasswordChangeView.as_view(), name='password_change'),
+    path('accounts/reset_password/', BBPasswordResetView.as_view(form_class=EmailValidationOnForgotPassword),
+         name='password_reset'),
+    path('accounts/reset_password/done', reset_password_done, name='reset_password_done'),
+    path('accounts/reset/<uidb64>/<token>/',
+         auth_views.PasswordResetConfirmView.as_view(template_name='password_reset_confirm.html'),
+         name='password_reset_confirm'),
     path('accounts/login', login_page, name='login'),
     path('accounts/change_comment/<int:group_pk>/<int:bb_pk>/<int:pk>/', comment_change, name='comment_change'),
     path('accounts/delete_comment/<int:group_pk>/<int:bb_pk>/<int:pk>/', comment_delete, name='comment_delete'),
@@ -35,6 +42,5 @@ urlpatterns = [
     path('<int:pk>/', by_group, name='by_group'),
     path('<str:page>/', other_page, name='other'),
     path('', index, name='index'),
-
 
 ]
