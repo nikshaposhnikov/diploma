@@ -15,7 +15,13 @@ from .utilities import (send_activation_notification, get_timestamp_path, get_na
                         send_new_comment_notification)
 
 
+class Schedule(models.Model):
+    group = models.ForeignKey('SubGroup', on_delete=models.PROTECT, null=True, blank=True, verbose_name='Группа')
+    teacher = models.ForeignKey('Teacher', on_delete=models.SET_NULL, null=True, verbose_name='Преподаватель')
+
+
 class Subject(models.Model):
+    group = models.ForeignKey('SubGroup', on_delete=models.PROTECT, null=True, blank=True, verbose_name='Группа')
     teacher = models.ForeignKey('Teacher', on_delete=models.SET_NULL, null=True, verbose_name='Преподаватель')
     name_of_subject = models.CharField(max_length=220, verbose_name='Название предмета')
 
@@ -144,7 +150,6 @@ class SubGroup(Group):
         verbose_name_plural = 'Группы'
 
 
-
 user_registrated = Signal(providing_args=['instance'])
 
 
@@ -156,17 +161,16 @@ user_registrated.connect(user_registrated_dispatcher)
 
 
 class AdvUser(AbstractUser):
+    group = models.ForeignKey('SubGroup', on_delete=models.PROTECT, null=True, verbose_name='Группа')
     is_teacher = models.BooleanField(default=False, verbose_name='Преподаватель')
     is_activated = models.BooleanField(default=True, db_index=True, verbose_name='Прошел активацию?')
     send_messages = models.BooleanField(default=True, verbose_name='Слать оповещания о новых комментариях?')
-
 
     def delete(self, *args, **kwargs):
         Comment.objects.filter(author=self.username).delete()
         for bb in self.bb_set.all():
             bb.delete()
         super().delete(*args, **kwargs)
-
 
     class Meta(AbstractUser.Meta):
         pass
@@ -175,8 +179,8 @@ class AdvUser(AbstractUser):
 class Teacher(AdvUser):
     middle_name = models.CharField(max_length=50, db_index=True, verbose_name='Отчество')
     position = models.CharField(max_length=50, db_index=True, verbose_name='Должность')
-    degree = models.CharField(max_length=100,  blank=True, verbose_name='Степень')
-    rank = models.CharField(max_length=40,  blank=True, verbose_name='Звание')
+    degree = models.CharField(max_length=100, blank=True, verbose_name='Степень')
+    rank = models.CharField(max_length=40, blank=True, verbose_name='Звание')
 
     class Meta(AbstractUser.Meta):
         verbose_name_plural = 'Преподаватели'
@@ -197,7 +201,7 @@ def notify_admin(sender, instance, created, **kwargs):
             html_message = '<p>Был зарегистрирован пользователь под логином <strong>%s</strong>.' \
                            '<p>Активируйте пользователя %s в админ-панели %s, ' \
                            'если это действительно преподаватель.</p> ' \
-                      % (instance.username, instance.username, host)
+                           % (instance.username, instance.username, host)
             from_addr = instance.email
             recipient_list = ('klandodo@gmail.com',)
             msg = EmailMultiAlternatives(subject, html_message, from_addr, recipient_list)

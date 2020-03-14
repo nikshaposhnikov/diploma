@@ -1,3 +1,12 @@
+from django.contrib import admin
+from django.urls import path, include
+from django.contrib.auth import views as auth_views
+from django.conf.urls.static import static
+from django.conf import settings
+from django.contrib.staticfiles.views import serve
+from django.views.decorators.cache import never_cache
+from learnDjango.urls import *
+
 from django.urls import path
 from .views import *
 from django.contrib.auth import views as auth_views
@@ -27,11 +36,14 @@ urlpatterns = [
     path('accounts/profile/delete/<int:pk>/', profile_bb_delete, name='profile_bb_delete'),
     path('accounts/profile/add/', profile_bb_add, name='profile_bb_add'),
     path('accounts/profile/<int:pk>/', profile_bb_detail, name='profile_bb_detail'),
-    path('accounts/profile/subject/<int:pk>/file/add/', profile_file_add, name='profile_file_add'),
+    path('accounts/profile/subject/<int:pk>/file/change/', profile_file_add, name='profile_file_add'),
     path('accounts/profile/subject/<int:pk>/', profile_sub_detail, name='profile_sub_detail'),
-
     path('accounts/profile/', profile, name='profile'),
     path('accounts/profile/subjects', teacher_subjects, name='teacher_subjects'),
+
+    # Student functionality
+    path('accounts/profile/student_subjects', student_subjects, name='student_subjects'),
+    path('accounts/student_profile/', student_profile, name='student_profile'),
     path('accounts/profile/change', ChangeUserInfoView.as_view(), name='profile_change'),
     path('accounts/profile/teacher_change', ChangeTeacherInfoView.as_view(), name='profile_teacher_change'),
     path('accounts/profile/delete', DeleteUserView.as_view(), name='profile_delete'),

@@ -42,7 +42,7 @@ class SearchForm(forms.Form):
 
 class SubGroupForm(forms.ModelForm):
     super_group = forms.ModelChoiceField(queryset=SuperGroup.objects.all(), empty_label=None,
-                                         label='Надгруппа', required=True)
+                                         label='Форма обучения', required=True)
 
     class Meta:
         model = SubGroup
@@ -70,6 +70,7 @@ class RegisterTeacherForm(forms.ModelForm):
     position = forms.CharField(required=True, label='Должность', widget=forms.TextInput)
     degree = forms.CharField(required=False, label='Степень', widget=forms.TextInput)
     rank = forms.CharField(required=False, label='Звание', widget=forms.TextInput)
+
     # is_teacher = forms.BooleanField(required=True, label='Преподаватель')
 
     def clean_email(self):
@@ -117,7 +118,7 @@ class RegisterUserForm(forms.ModelForm):
     username = forms.CharField(required=True, label='Логин', widget=forms.TextInput)
     first_name = forms.CharField(required=True, label='Имя', widget=forms.TextInput)
     last_name = forms.CharField(required=True, label='Фамилия', widget=forms.TextInput)
-    middle_name = forms.CharField(required=True, label='Отчество', widget=forms.TextInput)
+    group = forms.ModelChoiceField(queryset=SubGroup.objects.all(), required=True, label='Группа')
     email = forms.EmailField(required=True, label='Адрес электронной почты')
     password1 = forms.CharField(label='Пароль', widget=forms.PasswordInput,
                                 help_text=password_validation.password_validators_help_text_html())
@@ -162,8 +163,7 @@ class RegisterUserForm(forms.ModelForm):
 
     class Meta:
         model = AdvUser
-        fields = ('username', 'email', 'password1', 'password2', 'first_name', 'last_name', 'middle_name',
-                  'send_messages')
+        fields = ('username', 'email', 'password1', 'password2', 'first_name', 'last_name', 'group')
 
 
 class ChangeTeacherInfoForm(forms.ModelForm):
@@ -176,6 +176,20 @@ class ChangeTeacherInfoForm(forms.ModelForm):
     degree = forms.CharField(required=False, label='Степень', widget=forms.TextInput)
     rank = forms.CharField(required=False, label='Звание', widget=forms.TextInput)
 
+    def clean_username(self):
+        username = self.cleaned_data['username'].lower()
+        r = AdvUser.objects.filter(username=username)
+        if r.count():
+            raise ValidationError("Этот логин занят")
+        return username
+
+    def clean_email(self):
+        email = self.cleaned_data['email'].lower()
+        list_email = AdvUser.objects.filter(email=email)
+        if list_email.count():
+            raise ValidationError('Такой email уже занят')
+        return email
+
     class Meta:
         model = Teacher
         fields = ('username', 'email', 'first_name', 'last_name', 'middle_name',
@@ -184,11 +198,27 @@ class ChangeTeacherInfoForm(forms.ModelForm):
 
 class ChangeUserInfoForm(forms.ModelForm):
     username = forms.CharField(required=True, label='Логин', widget=forms.TextInput)
+    first_name = forms.CharField(required=True, label='Имя', widget=forms.TextInput)
+    last_name = forms.CharField(required=True, label='Фамилия', widget=forms.TextInput)
     email = forms.EmailField(required=True, label='Адрес электронной почты')
+
+    def clean_email(self):
+        email = self.cleaned_data['email'].lower()
+        list_email = AdvUser.objects.filter(email=email)
+        if list_email.count():
+            raise ValidationError('Такой email уже занят')
+        return email
+
+    def clean_username(self):
+        username = self.cleaned_data['username'].lower()
+        r = AdvUser.objects.filter(username=username)
+        if r.count():
+            raise ValidationError("Этот логин занят")
+        return username
 
     class Meta:
         model = AdvUser
-        fields = ('username', 'email', 'first_name', 'last_name', 'send_messages')
+        fields = ('username', 'first_name', 'last_name', 'email')
 
 
 class LoginForm(forms.ModelForm):

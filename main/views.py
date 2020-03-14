@@ -18,7 +18,7 @@ from django.urls import reverse_lazy
 from .utilities import signer
 from .models import AdvUser, SubGroup, Bb, Comment, Subject, AdditionalFile
 from .forms import *
-from .decorators import user_required, teacher_required, user_is_entry_author
+from .decorators import user_required, teacher_required, user_is_entry_author, student_required
 
 '''
 Details about the selected bb
@@ -164,7 +164,7 @@ class ChangeUserInfoView(SuccessMessageMixin, LoginRequiredMixin, UpdateView):
     model = AdvUser
     template_name = 'main/change_user_info.html'
     form_class = ChangeUserInfoForm
-    success_url = reverse_lazy('main:profile')
+    success_url = reverse_lazy('main:student_profile')
     success_message = 'Личные данные пользователя изменены'
 
     def dispatch(self, request, *args, **kwargs):
@@ -312,6 +312,15 @@ def profile_bb_detail(request, pk):
     return render(request, 'main/profile_bb_detail.html', context)
 
 
+
+@login_required
+def student_profile(request):
+    bbs = Bb.objects.filter(group=request.user.group.pk)
+    context = {'bbs': bbs}
+    return render(request, 'main/profile.html', context)
+
+
+@teacher_required
 @login_required
 def profile(request):
     bbs = Bb.objects.filter(author=request.user.pk)
@@ -319,6 +328,14 @@ def profile(request):
         context = {'bbs': bbs}
         return render(request, 'main/profile.html', context)
     return render(request, 'main/index.html')
+
+
+@student_required
+@login_required
+def student_subjects(request):
+    sbs = Subject.objects.filter(group=request.user.group)
+    context = {'sbs': sbs}
+    return render(request, 'main/subjects.html', context)
 
 
 @teacher_required
@@ -340,12 +357,12 @@ def login_page(request):
         if user is not None and user.is_teacher:
             login(request, user)
             return redirect('main:teacher_subjects')
+        elif user.is_superuser:
+            login(request, user)
+            return HttpResponseRedirect('../admin/')
         elif user is not None:
             login(request, user)
-            ''' 
-            REWRITE REDIRECT FOR STUDENT!
-            '''
-            return redirect('main:index')
+            return redirect('main:student_profile')
         else:
             messages.info(request, 'Вы ввели неверный логин либо пароль')
 

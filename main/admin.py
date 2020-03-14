@@ -14,10 +14,10 @@ class AdditionalFileInline(admin.TabularInline):
 
 
 class SubjectAdmin(admin.ModelAdmin):
-    list_display = ('teacher', 'name_of_subject')
+    list_display = ('teacher', 'name_of_subject', 'group')
     list_display_links = ['name_of_subject']
-    search_fields = ('teacher', 'name_of_subject')
-    fields = ('name_of_subject', 'teacher')
+    search_fields = ('teacher', 'name_of_subject', 'group')
+    fields = ('name_of_subject', 'teacher', 'group')
     inlines = (AdditionalFileInline,)
 
     def formfield_for_foreignkey(self, db_field, request, **kwargs):
@@ -128,10 +128,10 @@ admin.site.register(Teacher, TeacherAdmin)
 
 
 class AdvUserAdmin(admin.ModelAdmin):
-    list_display = ('__str__', 'is_activated', 'date_joined')
-    search_fields = ('username', 'email', 'first_name', 'last_name')
+    list_display = ('__str__', 'is_activated', 'date_joined', 'group')
+    search_fields = ('username', 'email', 'first_name', 'last_name', 'group')
     list_filter = (NonactivatedFilter,)
-    fields = (('username', 'email'), ('first_name', 'last_name'),
+    fields = (('username', 'email'), ('first_name', 'last_name', 'group'),
               ('send_messages', 'is_active', 'is_activated'),
               ('last_login', 'date_joined'))
     readonly_fields = ('last_login', 'date_joined')

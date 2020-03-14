@@ -11,4 +11,5 @@
     {% csrf_token %}
     {% buttons submit='Удалить' %}{% endbuttons %}
 </form>
+    <p><a href="{% url 'main:profile' %}">Отмена</a></p>
 {% endblock %}

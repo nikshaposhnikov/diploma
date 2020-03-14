@@ -12,12 +12,13 @@
             {% bootstrap_form form layout='horizontal' %}
             {% buttons submit='Сохранить' %}{% endbuttons %}
         </form>
+        <p><a href="{% url 'main:profile' %}">Отмена</a></p>
     {% else %}
         <form method="post">
             {% csrf_token %}
             {% bootstrap_form form layout='horizontal' %}
             {% buttons submit='Сохранить' %}{% endbuttons %}
         </form>
+        <p><a href="{% url 'main:student_profile' %}">Отмена</a></p>
     {% endif %}
-    <p><a href="{% url 'main:profile' %}">Отмена</a></p>
 {% endblock %}

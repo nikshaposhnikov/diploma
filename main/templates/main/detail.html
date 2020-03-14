@@ -10,8 +10,9 @@
         <div class="row">
             {% if bb.image %}
                 <div class="col-md-auto"><img src="{{ bb.image.url }}" class="main-image">
-                    {% if bb.author.first_name and bb.author.last_name %}
-                        <p>Автор: {{ bb.author.first_name }} {{ bb.author.last_name }}</p>
+                    {% if bb.author.first_name and bb.author.last_name and bb.author.teacher.middle_name %}
+                        <p>Автор: {{ bb.author.last_name }} {{ bb.author.first_name }}
+                            {{ bb.author.teacher.middle_name }}</p>
                     {% else %}
                         <p class="text-right font-italic">Автор: {{ bb.author.username }}</p>
                     {% endif %}
