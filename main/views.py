@@ -330,12 +330,12 @@ def profile(request):
     return render(request, 'main/index.html')
 
 
-@student_required
-@login_required
-def student_subjects(request):
-    sbs = Subject.objects.filter(group=request.user.group)
-    context = {'sbs': sbs}
-    return render(request, 'main/subjects.html', context)
+# @student_required
+# @login_required
+# def student_subjects(request):
+#     sbs = Subject.objects.filter(group=request.user.group)
+#     context = {'sbs': sbs}
+#     return render(request, 'main/subjects.html', context)
 
 
 @teacher_required

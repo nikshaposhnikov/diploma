@@ -33,23 +33,23 @@
             <h3>На данный момент у вас нет дисциплин, которые вы преподаёте. Дождитесь распределения
                 от администратора сайта</h3>
         {% endif %}
-    {% else %}
-        {% if sbs %}
-            <p>Дисциплины группы {{ user.group }}</p>
-            <ul class="list-unstyled">
-                {% for sb in sbs %}
-                    <li class="media my-5 p-3 border">
-                        {% url 'main:profile_sub_detail' pk=sb.pk as url %}
-                        <a href="{{ url }}"></a>
-                        <div class="media-body">
-                            <a href="{{ url }}">{{ sb.name_of_subject }}</a>
-                        </div>
-                    </li>
-                {% endfor %}
-            </ul>
-        {% else %}
-            <h3>На данный момент для вашей группы не были распределены пары. Дождитесь распределения
-                от администратора сайта</h3>
-        {% endif %}
+{#    {% else %}#}
+{#        {% if sbs %}#}
+{#            <p>Дисциплины группы {{ user.group }}</p>#}
+{#            <ul class="list-unstyled">#}
+{#                {% for sb in sbs %}#}
+{#                    <li class="media my-5 p-3 border">#}
+{#                        {% url 'main:profile_sub_detail' pk=sb.pk as url %}#}
+{#                        <a href="{{ url }}"></a>#}
+{#                        <div class="media-body">#}
+{#                            <a href="{{ url }}">{{ sb.name_of_subject }}</a>#}
+{#                        </div>#}
+{#                    </li>#}
+{#                {% endfor %}#}
+{#            </ul>#}
+{#        {% else %}#}
+{#            <h3>На данный момент для вашей группы не были распределены пары. Дождитесь распределения#}
+{#                от администратора сайта</h3>#}
+{#        {% endif %}#}
     {% endif %}
 {% endblock %}

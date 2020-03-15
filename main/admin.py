@@ -14,10 +14,10 @@ class AdditionalFileInline(admin.TabularInline):
 
 
 class SubjectAdmin(admin.ModelAdmin):
-    list_display = ('teacher', 'name_of_subject', 'group')
+    list_display = ('teacher', 'name_of_subject')
     list_display_links = ['name_of_subject']
-    search_fields = ('teacher', 'name_of_subject', 'group')
-    fields = ('name_of_subject', 'teacher', 'group')
+    search_fields = ('teacher', 'name_of_subject',)
+    fields = ('name_of_subject', 'teacher',)
     inlines = (AdditionalFileInline,)
 
     def formfield_for_foreignkey(self, db_field, request, **kwargs):

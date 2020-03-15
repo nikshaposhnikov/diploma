@@ -21,7 +21,6 @@ class Schedule(models.Model):
 
 
 class Subject(models.Model):
-    group = models.ForeignKey('SubGroup', on_delete=models.PROTECT, null=True, blank=True, verbose_name='Группа')
     teacher = models.ForeignKey('Teacher', on_delete=models.SET_NULL, null=True, verbose_name='Преподаватель')
     name_of_subject = models.CharField(max_length=220, verbose_name='Название предмета')
 
