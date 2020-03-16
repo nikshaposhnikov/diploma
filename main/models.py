@@ -9,15 +9,77 @@ from django.db import models
 from django.contrib.auth.models import AbstractUser
 from django.db.models.signals import post_save
 from django.contrib import messages
+import datetime
 from django.core.exceptions import ValidationError
 
 from .utilities import (send_activation_notification, get_timestamp_path, get_namestamp_path,
                         send_new_comment_notification)
 
+DAYS_OF_WEEK = (
+    ("0", 'Понедельник'),
+    ("1", 'Вторник'),
+    ("2", 'Среда'),
+    ("3", 'Четверг'),
+    ("4", 'Пятница'),
+    ("5", 'Суббота'),
+)
+
+TIME_CHOICES = (
+    ("08:30", '08:30'),
+    ("10:25", '10:25'),
+    ("12:35", '12:35'),
+    ("14:30", '14:30'),
+    ("16:25", '16:25'),
+    ("18:10", '18:10'),
+)
+
+
+class Structure(models.Model):
+    structure_name = models.CharField(max_length=15, verbose_name='Учебный корпус')
+
+    def __str__(self):
+        return self.structure_name
+
+    class Meta:
+        verbose_name_plural = 'Учебные корпуса'
+        verbose_name = 'Учебный корпус'
+        ordering = ['structure_name']
+
+
+class Auditory(models.Model):
+    auditory_number = models.CharField(max_length=5, verbose_name='Аудитория')
+
+    def __str__(self):
+        return self.auditory_number
+
+    class Meta:
+        verbose_name_plural = 'Аудитории'
+        verbose_name = 'Аудитория'
+        ordering = ['auditory_number']
+
 
 class Schedule(models.Model):
-    group = models.ForeignKey('SubGroup', on_delete=models.PROTECT, null=True, blank=True, verbose_name='Группа')
+    group = models.ForeignKey('SubGroup', on_delete=models.CASCADE, verbose_name='Группа')
+
+    def __str__(self):
+        return 'Расписание для группы --- ' + str(self.group)
+
+    class Meta:
+        verbose_name = 'Расписание'
+        verbose_name_plural = 'Расписание'
+
+
+class AdditionalSchedule(models.Model):
+    schedule = models.ForeignKey('Schedule', on_delete=models.CASCADE, verbose_name='Расписание')
+    subject = models.ForeignKey('Subject', on_delete=models.CASCADE, verbose_name='Дисциплина')
     teacher = models.ForeignKey('Teacher', on_delete=models.SET_NULL, null=True, verbose_name='Преподаватель')
+
+    def __str__(self):
+        return 'Добавление занятий'
+
+    class Meta:
+        verbose_name_plural = 'Продолжение расписания'
+        verbose_name = 'Продолжение расписания'
 
 
 class Subject(models.Model):
@@ -26,6 +88,11 @@ class Subject(models.Model):
 
     def __str__(self):
         return self.name_of_subject
+
+    def full_name(obj):
+        return "%s %s %s" % (obj.teacher.last_name, obj.teacher.first_name, obj.teacher.middle_name)
+
+    full_name.short_description = 'Преподаватель'
 
     class Meta:
         verbose_name_plural = 'Предметы'
@@ -87,7 +154,7 @@ class Bb(models.Model):
     title = models.CharField(max_length=40, verbose_name='Заголовок')
     content = models.TextField(verbose_name='Информация')
     image = models.ImageField(blank=True, upload_to=get_timestamp_path, verbose_name='Изображение')
-    author = models.ForeignKey('AdvUser', on_delete=models.CASCADE,
+    author = models.ForeignKey('Teacher', on_delete=models.CASCADE,
                                verbose_name='Автор объявления')
     is_active = models.BooleanField(default=True, db_index=True, verbose_name='Выводить в списке?')
     created_at = models.DateTimeField(auto_now_add=True, db_index=True, verbose_name='Опубликовано')
@@ -99,6 +166,11 @@ class Bb(models.Model):
         for ai in self.additionalimage_set.all():
             ai.delete()
         super().delete(*args, **kwargs)
+
+    def full_name(obj):
+        return "%s %s %s" % (obj.author.last_name, obj.author.first_name, obj.author.middle_name)
+
+    full_name.short_description = 'Преподаватель'
 
     class Meta:
         verbose_name_plural = 'Объявления'
@@ -171,8 +243,15 @@ class AdvUser(AbstractUser):
             bb.delete()
         super().delete(*args, **kwargs)
 
+    def full_name(obj):
+        return "%s %s" % (obj.last_name, obj.first_name)
+
+    full_name.short_description = 'Студент'
+
     class Meta(AbstractUser.Meta):
-        pass
+        verbose_name_plural = 'Студенты'
+        verbose_name = 'Студент'
+        ordering = ['last_name']
 
 
 class Teacher(AdvUser):
@@ -180,6 +259,11 @@ class Teacher(AdvUser):
     position = models.CharField(max_length=50, db_index=True, verbose_name='Должность')
     degree = models.CharField(max_length=100, blank=True, verbose_name='Степень')
     rank = models.CharField(max_length=40, blank=True, verbose_name='Звание')
+
+    def full_name(obj):
+        return "%s %s %s" % (obj.last_name, obj.first_name, obj.middle_name)
+
+    full_name.short_description = 'Преподаватель'
 
     class Meta(AbstractUser.Meta):
         verbose_name_plural = 'Преподаватели'

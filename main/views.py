@@ -278,7 +278,6 @@ def profile_file_add(request, pk):
     return render(request, 'main/profile_file_add.html', context)
 
 
-@teacher_required
 @login_required
 def profile_sub_detail(request, pk):
     sub = get_object_or_404(Subject, pk=pk)
@@ -330,12 +329,12 @@ def profile(request):
     return render(request, 'main/index.html')
 
 
-# @student_required
-# @login_required
-# def student_subjects(request):
-#     sbs = Subject.objects.filter(group=request.user.group)
-#     context = {'sbs': sbs}
-#     return render(request, 'main/subjects.html', context)
+@student_required
+@login_required
+def student_subjects(request):
+    sbs = AdditionalSchedule.objects.filter(schedule__group=request.user.group)
+    context = {'sbs': sbs}
+    return render(request, 'main/subjects.html', context)
 
 
 @teacher_required

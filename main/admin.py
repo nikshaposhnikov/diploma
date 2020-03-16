@@ -9,14 +9,52 @@ from django.contrib import messages
 admin.site.site_header = 'Админстрирование Study&Teach'
 
 
+class AdditionalScheduleInline(admin.TabularInline):
+    model = AdditionalSchedule
+
+    def formfield_for_foreignkey(self, db_field, request, **kwargs):
+        field = super().formfield_for_foreignkey(db_field, request, **kwargs)
+        if db_field.name == 'teacher':
+            kwargs['queryset'] = Teacher.objects.filter(is_teacher=True)
+            field.label_from_instance = lambda u: f'{u.last_name} {u.first_name} {u.middle_name}'
+        return field
+
+
+class ScheduleAdmin(admin.ModelAdmin):
+    list_filter = ('group',)
+    inlines = [AdditionalScheduleInline,]
+
+
+admin.site.register(Schedule, ScheduleAdmin)
+
+
+class AuditoryAdmin(admin.ModelAdmin):
+    list_display = ('__str__',)
+    search_fields = ('auditory_number',)
+    fields = ('auditory_number',)
+
+
+admin.site.register(Auditory, AuditoryAdmin)
+
+
+class StructureAdmin(admin.ModelAdmin):
+    list_display = ('__str__',)
+    search_fields = ('structure_name',)
+    fields = ('structure_name',)
+
+
+admin.site.register(Structure, StructureAdmin)
+
+
 class AdditionalFileInline(admin.TabularInline):
     model = AdditionalFile
 
 
 class SubjectAdmin(admin.ModelAdmin):
-    list_display = ('teacher', 'name_of_subject')
+    list_display = ('name_of_subject', 'full_name',)
     list_display_links = ['name_of_subject']
-    search_fields = ('teacher', 'name_of_subject',)
+    search_fields = ('name_of_subject', 'teacher__first_name', 'teacher__last_name',
+                     'teacher__middle_name')
     fields = ('name_of_subject', 'teacher',)
     inlines = (AdditionalFileInline,)
 
@@ -49,9 +87,10 @@ class AdditionalImageInline(admin.TabularInline):
 
 
 class BbAdmin(admin.ModelAdmin):
-    list_display = ('group', 'title', 'content', 'author', 'created_at')
-    list_display_links = ('title', 'content')
-    search_fields = ('title', 'content', 'author')
+    list_display = ('title', 'group', 'full_name', 'created_at')
+    list_display_links = ('title',)
+    search_fields = ('title', 'content', 'group__name', 'author__first_name', 'author__last_name',
+                     'author__middle_name',)
     date_hierarchy = 'created_at'
     fields = (('group', 'author'), 'title', 'content', 'image', 'is_active')
     inlines = (AdditionalImageInline,)
@@ -113,8 +152,8 @@ class NonactivatedFilter(admin.SimpleListFilter):
 
 
 class TeacherAdmin(admin.ModelAdmin):
-    list_display = ('__str__', 'is_activated', 'date_joined')
-    search_fields = ('username', 'email', 'first_name', 'last_name')
+    list_display = ('full_name', 'is_activated', 'date_joined')
+    search_fields = ('first_name', 'last_name', 'middle_name')
     list_filter = (NonactivatedFilter,)
     fields = (('username', 'email'), ('first_name', 'last_name', 'middle_name'),
               ('send_messages', 'is_active', 'is_activated', 'is_teacher'),
@@ -123,19 +162,30 @@ class TeacherAdmin(admin.ModelAdmin):
     readonly_fields = ('last_login', 'date_joined')
     actions = (send_activation_notifications,)
 
+    def formfield_for_foreignkey(self, db_field, request, **kwargs):
+        field = super().formfield_for_foreignkey(db_field, request, **kwargs)
+        if db_field.name == 'teacher':
+            kwargs['queryset'] = Teacher.objects.filter(is_teacher=True)
+            field.label_from_instance = lambda u: f'{u.last_name} {u.first_name} {u.middle_name}'
+        return field
+
 
 admin.site.register(Teacher, TeacherAdmin)
 
 
 class AdvUserAdmin(admin.ModelAdmin):
-    list_display = ('__str__', 'is_activated', 'date_joined', 'group')
-    search_fields = ('username', 'email', 'first_name', 'last_name', 'group')
+    list_display = ('full_name', 'is_activated', 'date_joined',)
+    search_fields = ('email', 'first_name', 'last_name')
     list_filter = (NonactivatedFilter,)
     fields = (('username', 'email'), ('first_name', 'last_name', 'group'),
-              ('send_messages', 'is_active', 'is_activated'),
+              ('is_active', 'is_activated'),
               ('last_login', 'date_joined'))
     readonly_fields = ('last_login', 'date_joined')
     actions = (send_activation_notifications,)
+
+    def get_queryset(self, request):
+        qs = super(AdvUserAdmin, self).get_queryset(request)
+        return qs.filter(is_teacher=False)
 
 
 admin.site.register(AdvUser, AdvUserAdmin)

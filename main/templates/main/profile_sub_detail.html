@@ -9,23 +9,46 @@
     <div class="container-fluid mt-3">
         <h2>Дисциплина - {{ sub.name_of_subject }}</h2>
     </div>
-    <p><a href="{% url 'main:profile_file_add' sub.pk %}">Дополнительный материал</a></p>
-    {% if ais %}
-        <div class="d-flex justify-content-between flex-wrap mt-5">
-            <p>Материалы к дисциплине:</p>
-            <ul class="list-unstyled">
-                {% for ai in ais %}
-                    <li class="media my-1 p-2 border">
-                        <p><a href="{{ ai.file.url }}">
-                            {{ ai.file }}
-                        </a>
-                            {{ ai.file.size|filesizeformat }}</p>
-                    </li>
-                {% endfor %}
-            </ul>
-        </div>
-    {% else %}
-        <h5>На данный момент вы не добавляли никаких дополнительных материалов</h5>
+    {% if user.is_teacher %}
+        <p><a href="{% url 'main:profile_file_add' sub.pk %}">Дополнительный материал</a></p>
     {% endif %}
-    <p><a href="{% url 'main:teacher_subjects' %}">Назад</a></p>
+    {% if user.is_teacher %}
+        {% if ais %}
+            <div class="d-flex justify-content-between flex-wrap mt-5">
+                <p>Материалы к дисциплине:</p>
+                <ul class="list-unstyled">
+                    {% for ai in ais %}
+                        <li class="media my-1 p-2 border">
+                            <p><a href="{{ ai.file.url }}">
+                                {{ ai.file }}
+                            </a>
+                                {{ ai.file.size|filesizeformat }}</p>
+                        </li>
+                    {% endfor %}
+                </ul>
+            </div>
+        {% else %}
+            <h5>На данный момент вы не добавляли никаких дополнительных материалов</h5>
+        {% endif %}
+        <p><a href="{% url 'main:teacher_subjects' %}">Назад</a></p>
+    {% else %}
+        {% if ais %}
+            <div class="d-flex justify-content-between flex-wrap mt-5">
+                <p>Материалы к дисциплине:</p>
+                <ul class="list-unstyled">
+                    {% for ai in ais %}
+                        <li class="media my-1 p-2 border">
+                            <p><a href="{{ ai.file.url }}">
+                                {{ ai.file }}
+                            </a>
+                                {{ ai.file.size|filesizeformat }}</p>
+                        </li>
+                    {% endfor %}
+                </ul>
+            </div>
+        {% else %}
+            <h5>На данный момент дополнительных материалов нет</h5>
+        {% endif %}
+        <p><a href="{% url 'main:student_subjects' %}">Назад</a></p>
+    {% endif %}
 {% endblock %}
