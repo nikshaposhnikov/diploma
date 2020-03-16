@@ -29,6 +29,15 @@
         <p>Здравствуйте!</p>
     {% endif %}
     {% if user.is_teacher %}
+        <div class="container-fluid mb-2">
+            <div class="row">
+                <div class="col">&nbsp;</div>
+                <form class="col-md-auto form-inline">
+                    {% bootstrap_form form show_label=False %}
+                    {% bootstrap_button content='Искать' button_type='submit' %}
+                </form>
+            </div>
+        </div>
         {% if bbs %}
             <h3>Ваши объявления</h3>
             <p><a href="{% url 'main:profile_bb_add' %}">Добавить объявление</a></p>
@@ -55,12 +64,22 @@
                         </div>
                     </li>
                 {% endfor %}
+                {% bootstrap_pagination page url=keyword %}
             </ul>
         {% else %}
             <h3>На данный момент вы не опубликовали ни одного объявления</h3>
             <p><a href="{% url 'main:profile_bb_add' %}">Добавить объявление</a></p>
         {% endif %}
     {% else %}
+        <div class="container-fluid mb-2">
+            <div class="row">
+                <div class="col">&nbsp;</div>
+                <form class="col-md-auto form-inline">
+                    {% bootstrap_form form show_label=False %}
+                    {% bootstrap_button content='Искать' button_type='submit' %}
+                </form>
+            </div>
+        </div>
         {% if bbs %}
             <h3>Объявления для вашей группы {{ user.group }} </h3>
             <ul class="list-unstyled">
@@ -88,6 +107,7 @@
                         </div>
                     </li>
                 {% endfor %}
+                {% bootstrap_pagination page url=keyword %}
             </ul>
         {% else %}
             <h3>На данный момент для вашей группы нет объявлений</h3>

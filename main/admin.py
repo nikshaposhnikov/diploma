@@ -12,6 +12,7 @@ admin.site.site_header = 'Админстрирование Study&Teach'
 class AdditionalScheduleInline(admin.TabularInline):
     model = AdditionalSchedule
 
+
     def formfield_for_foreignkey(self, db_field, request, **kwargs):
         field = super().formfield_for_foreignkey(db_field, request, **kwargs)
         if db_field.name == 'teacher':

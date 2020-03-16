@@ -201,6 +201,7 @@ class ChangeUserInfoForm(forms.ModelForm):
     first_name = forms.CharField(required=True, label='Имя', widget=forms.TextInput)
     last_name = forms.CharField(required=True, label='Фамилия', widget=forms.TextInput)
     email = forms.EmailField(required=True, label='Адрес электронной почты')
+    group = forms.ModelChoiceField(queryset=SubGroup.objects.all(), required=True, label='Группа')
 
     def clean_email(self):
         email = self.cleaned_data['email'].lower()
@@ -216,9 +217,16 @@ class ChangeUserInfoForm(forms.ModelForm):
             raise ValidationError("Этот логин занят")
         return username
 
+    def __init__(self, *args, **kwargs):
+        super(ChangeUserInfoForm, self).__init__(*args, **kwargs)
+        instance = getattr(self, 'instance', None)
+        if instance and instance.id:
+            self.fields['group'].widget.attrs['disabled'] = 'disabled'
+
     class Meta:
         model = AdvUser
-        fields = ('username', 'first_name', 'last_name', 'email')
+        fields = ('username', 'first_name', 'last_name', 'email', 'group')
+
 
 
 class LoginForm(forms.ModelForm):

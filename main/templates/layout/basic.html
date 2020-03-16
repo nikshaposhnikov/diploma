@@ -29,7 +29,8 @@
                         <a class="dropdown-item" href="{% url 'main:profile' %}">Мои объявления</a>
                         <a class="dropdown-item" href="{% url 'main:teacher_subjects' %}">Мои дисциплины</a>
                         <a class="dropdown-item" href="#">Расписание</a>
-                        <a class="dropdown-item" href="{% url 'main:profile_teacher_change' %}">Изменить личные данные</a>
+                        <a class="dropdown-item" href="{% url 'main:profile_teacher_change' %}">Изменить личные
+                            данные</a>
                         <a class="dropdown-item" href="{% url 'main:password_change' %}">Изменить пароль</a>
                         <div class="dropdown-divider"></div>
                         <a class="dropdown-item" href="{% url 'main:logout' %}">Выйти</a>
@@ -54,18 +55,27 @@
     </ul>
 </div>
 <div class="row">
-    <nav class="col-md-auto nav flex-column border">
-        <a class="nav-link root" href="{% url 'main:index' %}">Главная</a>
-        {% for group in groups %}
-            {% ifchanged group.super_group.pk %}
-                <span class="nav-link root font-weight-bold">
+    {% if user.is_anonymous %}
+        <nav class="col-md-auto nav flex-column border">
+            <a class="nav-link root" href="{% url 'main:index' %}">Главная</a>
+            <a class="nav-link root" href="{% url 'main:other' page='about' %}">О сайте</a>
+        </nav>
+    {% else %}
+        <nav class="col-md-auto nav flex-column border">
+            <a class="nav-link root" href="{% url 'main:index' %}">Главная</a>
+        {% if user.is_teacher %}
+            {% for group in groups %}
+                {% ifchanged group.super_group.pk %}
+                    <span class="nav-link root font-weight-bold">
                 {{ group.super_group.name }}</span>
-            {% endifchanged %}
-            <a class="nav-link" href="{% url 'main:by_group' pk=group.pk %}">
-                {{ group.name }}</a>
-        {% endfor %}
-        <a class="nav-link root" href="{% url 'main:other' page='about' %}">О сайте</a>
-    </nav>
+                {% endifchanged %}
+                <a class="nav-link" href="{% url 'main:by_group' pk=group.pk %}">
+                    {{ group.name }}</a>
+            {% endfor %}
+            {% endif %}
+            <a class="nav-link root" href="{% url 'main:other' page='about' %}">О сайте</a>
+        </nav>
+    {% endif %}
     <section class="col-border py-2">
         {% bootstrap_messages %}
         {% block content %}

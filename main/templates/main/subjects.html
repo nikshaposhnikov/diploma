@@ -29,6 +29,7 @@
                     </li>
                 {% endfor %}
             </ul>
+            {% bootstrap_pagination page url=keyword %}
         {% else %}
             <h3>На данный момент у вас нет дисциплин, которые вы преподаёте. Дождитесь распределения
                 от администратора сайта</h3>
@@ -44,13 +45,14 @@
                         <div class="media-body">
                             <a href="{{ url }}">{{ sb.subject.name_of_subject }}</a>
                         </div>
-                      <div class="media-body">
+                        <div class="media-body">
                             <p>Преподаватель: {{ sb.teacher.last_name }} {{ sb.teacher.first_name }}
                                 {{ sb.teacher.middle_name }}</p>
                         </div>
                     </li>
                 {% endfor %}
             </ul>
+            {% bootstrap_pagination page url=keyword %}
         {% else %}
             <h3>На данный момент для вашей группы не были распределены пары. Дождитесь распределения
                 от администратора сайта</h3>

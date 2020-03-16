@@ -25,12 +25,12 @@ DAYS_OF_WEEK = (
 )
 
 TIME_CHOICES = (
-    ("08:30", '08:30'),
-    ("10:25", '10:25'),
-    ("12:35", '12:35'),
-    ("14:30", '14:30'),
-    ("16:25", '16:25'),
-    ("18:10", '18:10'),
+    ("08:30:00", '08:30:00'),
+    ("10:25:00", '10:25:00'),
+    ("12:35:00", '12:35:00'),
+    ("14:30:00", '14:30:00'),
+    ("16:25:00", '16:25:00'),
+    ("18:10:00", '18:10:00'),
 )
 
 
@@ -73,6 +73,10 @@ class AdditionalSchedule(models.Model):
     schedule = models.ForeignKey('Schedule', on_delete=models.CASCADE, verbose_name='Расписание')
     subject = models.ForeignKey('Subject', on_delete=models.CASCADE, verbose_name='Дисциплина')
     teacher = models.ForeignKey('Teacher', on_delete=models.SET_NULL, null=True, verbose_name='Преподаватель')
+    structure = models.ForeignKey('Structure', on_delete=models.PROTECT, null=True, verbose_name='Учебный корпус')
+    auditory = models.ForeignKey('Auditory', on_delete=models.PROTECT, null=True, verbose_name='Аудитория')
+    start_time = models.CharField(max_length=10, choices=TIME_CHOICES, null=True, verbose_name='Начало занятия')
+    days = models.CharField(max_length=1, choices=DAYS_OF_WEEK, null=True, verbose_name='День недели')
 
     def __str__(self):
         return 'Добавление занятий'
@@ -179,7 +183,7 @@ class Bb(models.Model):
 
 
 class Group(models.Model):
-    name = models.CharField(max_length=20, db_index=True, unique=True, verbose_name='Название')
+    name = models.CharField(max_length=50, db_index=True, unique=True, verbose_name='Название')
     order = models.SmallIntegerField(default=0, db_index=True, verbose_name='Порядок')
     super_group = models.ForeignKey('SuperGroup', on_delete=models.PROTECT, null=True, blank=True,
                                     verbose_name='Форма обучения')

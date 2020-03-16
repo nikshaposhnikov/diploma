@@ -2,10 +2,21 @@
 
 {% load thumbnail %}
 {% load static %}
+{% load bootstrap4 %}
+
 
 {% block content %}
+    <div class="container-fluid mb-2">
+        <div class="row">
+            <div class="col">&nbsp;</div>
+            <form class="col-md-auto form-inline">
+                {% bootstrap_form form show_label=False %}
+                {% bootstrap_button content='Искать' button_type='submit' %}
+            </form>
+        </div>
+    </div>
     {% if bbs %}
-        <h2>Последние 10 объявлений</h2>
+        <h2>Общие объявления</h2>
         <ul class="list-unstyled">
             {% for bb in bbs %}
                 <li class="media my-5 p-3 border">
@@ -33,5 +44,6 @@
                 </li>
             {% endfor %}
         </ul>
+        {% bootstrap_pagination page url=keyword %}
     {% endif %}
 {% endblock %}

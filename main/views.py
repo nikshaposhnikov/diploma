@@ -60,7 +60,9 @@ def by_group(request, pk):
     bbs = Bb.objects.filter(is_active=True, group=pk)
     if 'keyword' in request.GET:
         keyword = request.GET['keyword']
-        q = Q(title__icontains=keyword) | Q(content__icontains=keyword)
+        q = Q(title__icontains=keyword) | Q(content__icontains=keyword) | Q(author__middle_name__icontains=keyword) |\
+            Q(author__first_name__icontains=keyword) |\
+            Q(author__last_name__icontains=keyword)
         bbs = bbs.filter(q)
     else:
         keyword = ''
@@ -311,11 +313,26 @@ def profile_bb_detail(request, pk):
     return render(request, 'main/profile_bb_detail.html', context)
 
 
-
+@student_required
 @login_required
 def student_profile(request):
     bbs = Bb.objects.filter(group=request.user.group.pk)
-    context = {'bbs': bbs}
+    if 'keyword' in request.GET:
+        keyword = request.GET['keyword']
+        q = Q(title__icontains=keyword) | Q(content__icontains=keyword) | Q(author__middle_name__icontains=keyword) |\
+            Q(author__first_name__icontains=keyword) |\
+            Q(author__last_name__icontains=keyword)
+        bbs = bbs.filter(q)
+    else:
+        keyword = ''
+    form = SearchForm(initial={'keyword': keyword})
+    paginator = Paginator(bbs, 8)
+    if 'page' in request.GET:
+        page_num = request.GET['page']
+    else:
+        page_num = 1
+    page = paginator.get_page(page_num)
+    context = {'page': page, 'bbs': page.object_list, 'form': form}
     return render(request, 'main/profile.html', context)
 
 
@@ -323,17 +340,36 @@ def student_profile(request):
 @login_required
 def profile(request):
     bbs = Bb.objects.filter(author=request.user.pk)
-    if request.user.is_teacher:
-        context = {'bbs': bbs}
-        return render(request, 'main/profile.html', context)
-    return render(request, 'main/index.html')
+    if 'keyword' in request.GET:
+        keyword = request.GET['keyword']
+        q = Q(title__icontains=keyword) | Q(content__icontains=keyword) | Q(author__middle_name__icontains=keyword) |\
+            Q(author__first_name__icontains=keyword) |\
+            Q(author__last_name__icontains=keyword)
+        bbs = bbs.filter(q)
+    else:
+        keyword = ''
+    form = SearchForm(initial={'keyword': keyword})
+    paginator = Paginator(bbs, 5)
+    if 'page' in request.GET:
+        page_num = request.GET['page']
+    else:
+        page_num = 1
+    page = paginator.get_page(page_num)
+    context = {'page': page, 'bbs': page.object_list, 'form': form}
+    return render(request, 'main/profile.html', context)
 
 
 @student_required
 @login_required
 def student_subjects(request):
     sbs = AdditionalSchedule.objects.filter(schedule__group=request.user.group)
-    context = {'sbs': sbs}
+    paginator = Paginator(sbs, 8)
+    if 'page' in request.GET:
+        page_num = request.GET['page']
+    else:
+        page_num = 1
+    page = paginator.get_page(page_num)
+    context = {'page': page, 'sbs': page.object_list}
     return render(request, 'main/subjects.html', context)
 
 
@@ -341,7 +377,13 @@ def student_subjects(request):
 @login_required
 def teacher_subjects(request):
     sbs = Subject.objects.filter(teacher=request.user.pk)
-    context = {'sbs': sbs}
+    paginator = Paginator(sbs, 8)
+    if 'page' in request.GET:
+        page_num = request.GET['page']
+    else:
+        page_num = 1
+    page = paginator.get_page(page_num)
+    context = {'page': page, 'sbs': page.object_list}
     return render(request, 'main/subjects.html', context)
 
 
@@ -378,8 +420,23 @@ def other_page(request, page):
 
 
 def index(request):
-    bbs = Bb.objects.filter(is_active=True)[:10]
-    context = {'bbs': bbs}
+    bbs = Bb.objects.filter(is_active=True, group__name__icontains='Общие')
+    if 'keyword' in request.GET:
+        keyword = request.GET['keyword']
+        q = Q(title__icontains=keyword) | Q(content__icontains=keyword) |\
+            Q(author__middle_name__icontains=keyword) | Q(author__first_name__icontains=keyword) |\
+            Q(author__last_name__icontains=keyword)
+        bbs = bbs.filter(q)
+    else:
+        keyword = ''
+    form = SearchForm(initial={'keyword': keyword})
+    paginator = Paginator(bbs, 5)
+    if 'page' in request.GET:
+        page_num = request.GET['page']
+    else:
+        page_num = 1
+    page = paginator.get_page(page_num)
+    context = {'page': page, 'bbs': page.object_list, 'form': form}
     return render(request, 'main/index.html', context)
 
 

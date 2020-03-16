@@ -28,7 +28,11 @@
             {% endfor %}
         </div>
     {% endif %}
+    {% if user.is_teacher %}
     <p><a href="{% url 'main:profile' %}">Назад</a></p>
+    {% else %}
+    <p><a href="{% url 'main:student_profile' %}">Назад</a></p>
+    {% endif %}
     <h4 class="mt-5">Новый комментарий</h4>
     <form method="post">
         {% csrf_token %}
