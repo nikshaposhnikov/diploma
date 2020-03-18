@@ -60,8 +60,8 @@ def by_group(request, pk):
     bbs = Bb.objects.filter(is_active=True, group=pk)
     if 'keyword' in request.GET:
         keyword = request.GET['keyword']
-        q = Q(title__icontains=keyword) | Q(content__icontains=keyword) | Q(author__middle_name__icontains=keyword) |\
-            Q(author__first_name__icontains=keyword) |\
+        q = Q(title__icontains=keyword) | Q(content__icontains=keyword) | Q(author__middle_name__icontains=keyword) | \
+            Q(author__first_name__icontains=keyword) | \
             Q(author__last_name__icontains=keyword)
         bbs = bbs.filter(q)
     else:
@@ -319,8 +319,8 @@ def student_profile(request):
     bbs = Bb.objects.filter(group=request.user.group.pk)
     if 'keyword' in request.GET:
         keyword = request.GET['keyword']
-        q = Q(title__icontains=keyword) | Q(content__icontains=keyword) | Q(author__middle_name__icontains=keyword) |\
-            Q(author__first_name__icontains=keyword) |\
+        q = Q(title__icontains=keyword) | Q(content__icontains=keyword) | Q(author__middle_name__icontains=keyword) | \
+            Q(author__first_name__icontains=keyword) | \
             Q(author__last_name__icontains=keyword)
         bbs = bbs.filter(q)
     else:
@@ -342,8 +342,8 @@ def profile(request):
     bbs = Bb.objects.filter(author=request.user.pk)
     if 'keyword' in request.GET:
         keyword = request.GET['keyword']
-        q = Q(title__icontains=keyword) | Q(content__icontains=keyword) | Q(author__middle_name__icontains=keyword) |\
-            Q(author__first_name__icontains=keyword) |\
+        q = Q(title__icontains=keyword) | Q(content__icontains=keyword) | Q(author__middle_name__icontains=keyword) | \
+            Q(author__first_name__icontains=keyword) | \
             Q(author__last_name__icontains=keyword)
         bbs = bbs.filter(q)
     else:
@@ -357,6 +357,60 @@ def profile(request):
     page = paginator.get_page(page_num)
     context = {'page': page, 'bbs': page.object_list, 'form': form}
     return render(request, 'main/profile.html', context)
+
+
+@student_required
+@login_required
+def student_schedule(request):
+    sbs = AdditionalSchedule.objects.filter(schedule__group=request.user.group)
+
+    first_sub_monday = []
+    for sb in sbs:
+        if sb.day == '0' and sb.start_time == '08:30:00':
+            first_sub_monday.append(sb)
+            break
+        else:
+            break
+    print(first_sub_monday)
+
+    first_sub_tuesday = []
+    for sb in sbs:
+        if sb.day == '1' and sb.start_time == '08:30:00':
+            first_sub_tuesday.append(sb)
+            break
+        else:
+            break
+    print(first_sub_tuesday)
+
+    first_sub_wednesday = []
+    for sb in sbs:
+        if sb.day == '2' and sb.start_time == '08:30:00':
+            first_sub_wednesday.append(sb)
+            break
+        else:
+            break
+    print(first_sub_wednesday)
+
+    '''
+    GET CERTAIN SUBJECTS ON CERTAIN DAYS
+    '''
+    sbs_monday = AdditionalSchedule.objects.filter(schedule__group=request.user.group, day='0')
+    sbs_tuesday = AdditionalSchedule.objects.filter(schedule__group=request.user.group, day='1')
+    sbs_wednesday = AdditionalSchedule.objects.filter(schedule__group=request.user.group, day='2')
+    sbs_thursday = AdditionalSchedule.objects.filter(schedule__group=request.user.group, day='3')
+    sbs_friday = AdditionalSchedule.objects.filter(schedule__group=request.user.group, day='4')
+    sbs_saturday = AdditionalSchedule.objects.filter(schedule__group=request.user.group, day='5')
+
+    context = {'sbs': sbs, 'header': [' ', 'Понедельник', ' ', 'Вторник', ' ', 'Среда', ' ', 'Четверг', ' ', 'Пятница',
+                                      ' ', 'Суббота', ' '],
+               'rows': [{'time': '8:30', 'first_sub_monday': first_sub_monday, 'first_sub_tuesday': first_sub_tuesday,
+                         'first_sub_wednesday': first_sub_wednesday, },
+                        {'time': '10:25', 'chemblid': 31290, 'prefName': 'B'},
+                        {'time': '12:35', 'chemblid': 98765, 'prefName': 'C'},
+                        {'time': '14:30', 'chemblid': 98765, 'prefName': 'C'},
+                        {'time': '16:25', 'chemblid': 98765, 'prefName': 'C'},
+                        {'time': '18:10', 'chemblid': 98765, 'prefName': 'C'}]}
+    return render(request, 'main/schedule.html', context)
 
 
 @student_required
@@ -376,7 +430,7 @@ def student_subjects(request):
 @teacher_required
 @login_required
 def teacher_subjects(request):
-    sbs = Subject.objects.filter(teacher=request.user.pk)
+    sbs = AdditionalSchedule.objects.filter(teacher=request.user.pk)
     paginator = Paginator(sbs, 8)
     if 'page' in request.GET:
         page_num = request.GET['page']
@@ -423,8 +477,8 @@ def index(request):
     bbs = Bb.objects.filter(is_active=True, group__name__icontains='Общие')
     if 'keyword' in request.GET:
         keyword = request.GET['keyword']
-        q = Q(title__icontains=keyword) | Q(content__icontains=keyword) |\
-            Q(author__middle_name__icontains=keyword) | Q(author__first_name__icontains=keyword) |\
+        q = Q(title__icontains=keyword) | Q(content__icontains=keyword) | \
+            Q(author__middle_name__icontains=keyword) | Q(author__first_name__icontains=keyword) | \
             Q(author__last_name__icontains=keyword)
         bbs = bbs.filter(q)
     else:

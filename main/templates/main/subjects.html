@@ -21,10 +21,10 @@
             <ul class="list-unstyled">
                 {% for sb in sbs %}
                     <li class="media my-5 p-3 border">
-                        {% url 'main:profile_sub_detail' pk=sb.pk as url %}
+                        {% url 'main:profile_sub_detail' pk=sb.subject.pk as url %}
                         <a href="{{ url }}"></a>
                         <div class="media-body">
-                            <a href="{{ url }}">{{ sb.name_of_subject }}</a>
+                            <a href="{{ url }}">{{ sb.subject.name_of_subject }}</a>
                         </div>
                     </li>
                 {% endfor %}

@@ -52,19 +52,11 @@ class AdditionalFileInline(admin.TabularInline):
 
 
 class SubjectAdmin(admin.ModelAdmin):
-    list_display = ('name_of_subject', 'full_name',)
+    list_display = ('name_of_subject', )
     list_display_links = ['name_of_subject']
-    search_fields = ('name_of_subject', 'teacher__first_name', 'teacher__last_name',
-                     'teacher__middle_name')
-    fields = ('name_of_subject', 'teacher',)
+    search_fields = ('name_of_subject',)
+    fields = ('name_of_subject',)
     inlines = (AdditionalFileInline,)
-
-    def formfield_for_foreignkey(self, db_field, request, **kwargs):
-        field = super().formfield_for_foreignkey(db_field, request, **kwargs)
-        if db_field.name == 'teacher':
-            kwargs['queryset'] = Teacher.objects.filter(is_teacher=True)
-            field.label_from_instance = lambda u: f'{u.last_name} {u.first_name} {u.middle_name}'
-        return field
 
 
 admin.site.register(Subject, SubjectAdmin)

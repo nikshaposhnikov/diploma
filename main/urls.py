@@ -43,6 +43,7 @@ urlpatterns = [
 
     # Student functionality
     path('accounts/profile/student_subjects', student_subjects, name='student_subjects'),
+    path('accounts/profile/student_schedule', student_schedule, name='student_schedule'),
     path('accounts/student_profile/', student_profile, name='student_profile'),
     path('accounts/profile/change', ChangeUserInfoView.as_view(), name='profile_change'),
     path('accounts/profile/teacher_change', ChangeTeacherInfoView.as_view(), name='profile_teacher_change'),
