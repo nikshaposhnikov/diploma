@@ -1,0 +1,182 @@
+{% extends 'layout/basic.html' %}
+
+{% load thumbnail %}
+{% load static %}
+{% load bootstrap4 %}
+
+{% block title %}
+    Расписание
+{% endblock %}
+
+{% block content %}
+    {% if ais %}
+        <p>Расписание группы {{ sh.group.name }}</p>
+        {% if sbs_monday %}
+            <table border="2" cellspacing="3" align="center">
+                <thead>
+                <tr>
+                    <th></th>
+                    <th>Понедельник</th>
+                    <th></th>
+                </tr>
+                </thead>
+                <tbody>
+                <th></th>
+                <th></th>
+                {% for sb in sbs_monday %}
+                    <tr>
+                        <th>{{ sb.start_time|slice:5 }}</th>
+                        <th>{{ sb.subject.name_of_subject }}
+                            <p>{{ sb.teacher.last_name }} {{ sb.teacher.first_name }} {{ sb.teacher.middle_name }}</p>
+                        </th>
+                        <th>{{ sb.structure.structure_name }} {{ sb.auditory.auditory_number }}</th>
+                    </tr>
+                {% endfor %}
+                </tbody>
+            </table>
+        {% else %}
+            В понедельник пар нет
+        {% endif %}
+        <p></p>
+        <br>
+        {% if sbs_tuesday %}
+            <table border="2" cellspacing="3" align="center">
+                <thead>
+                <tr>
+                    <th></th>
+                    <th>Вторник</th>
+                    <th></th>
+                </tr>
+                </thead>
+                <tbody>
+                <th></th>
+                <th></th>
+                {% for sb in sbs_tuesday %}
+                    <tr>
+                        <th>{{ sb.start_time|slice:5 }}</th>
+                        <th>{{ sb.subject.name_of_subject }}
+                            <p>{{ sb.teacher.last_name }} {{ sb.teacher.first_name }} {{ sb.teacher.middle_name }}</p>
+                        </th>
+                        <th>{{ sb.structure.structure_name }} {{ sb.auditory.auditory_number }}</th>
+                    </tr>
+                {% endfor %}
+                </tbody>
+            </table>
+        {% else %}
+            Во вторник пар нет
+        {% endif %}
+        <p></p>
+        <br>
+        {% if sbs_wednesday %}
+            <table border="2" cellspacing="3" align="center">
+                <thead>
+                <tr>
+                    <th></th>
+                    <th>Среда</th>
+                    <th></th>
+                </tr>
+                </thead>
+                <tbody>
+                <th></th>
+                <th></th>
+                {% for sb in sbs_wednesday %}
+                    <tr>
+                        <th>{{ sb.start_time|slice:5 }}</th>
+                        <th>{{ sb.subject.name_of_subject }}
+                            <p>{{ sb.teacher.last_name }} {{ sb.teacher.first_name }} {{ sb.teacher.middle_name }}</p>
+                        </th>
+                        <th>{{ sb.structure.structure_name }} {{ sb.auditory.auditory_number }}</th>
+                    </tr>
+                {% endfor %}
+                </tbody>
+            </table>
+        {% else %}
+            В среду пар нет
+        {% endif %}
+        <p></p>
+        <br>
+        {% if sbs_thursday %}
+            <table border="2" cellspacing="3" align="center">
+                <thead>
+                <tr>
+                    <th></th>
+                    <th>Четверг</th>
+                    <th></th>
+                </tr>
+                </thead>
+                <tbody>
+                <th></th>
+                <th></th>
+                {% for sb in sbs_thursday %}
+                    <tr>
+                        <th>{{ sb.start_time|slice:5 }}</th>
+                        <th>{{ sb.subject.name_of_subject }}
+                            <p>{{ sb.teacher.last_name }} {{ sb.teacher.first_name }} {{ sb.teacher.middle_name }}</p>
+                        </th>
+                        <th>{{ sb.structure.structure_name }} {{ sb.auditory.auditory_number }}</th>
+                    </tr>
+                {% endfor %}
+                </tbody>
+            </table>
+        {% else %}
+            В четвер пар нет
+        {% endif %}
+        <p></p>
+        <br>
+        {% if sbs_friday %}
+            <table border="2" cellspacing="3" align="center">
+                <thead>
+                <tr>
+                    <th></th>
+                    <th>Пятница</th>
+                    <th></th>
+                </tr>
+                </thead>
+                <tbody>
+                <th></th>
+                <th></th>
+                {% for sb in sbs_friday %}
+                    <tr>
+                        <th>{{ sb.start_time|slice:5 }}</th>
+                        <th>{{ sb.subject.name_of_subject }}
+                            <p>{{ sb.teacher.last_name }} {{ sb.teacher.first_name }} {{ sb.teacher.middle_name }}</p>
+                        </th>
+                        <th>{{ sb.structure.structure_name }} {{ sb.auditory.auditory_number }}</th>
+                    </tr>
+                {% endfor %}
+                </tbody>
+            </table>
+        {% else %}
+            В пятницу пар нет
+        {% endif %}
+        <p></p>
+        <br>
+        {% if sbs_saturday %}
+            <table border="2" cellspacing="3" align="center">
+                <thead>
+                <tr>
+                    <th></th>
+                    <th>Суббота</th>
+                    <th></th>
+                </tr>
+                </thead>
+                <tbody>
+                <th></th>
+                <th></th>
+                {% for sb in sbs_saturday %}
+                    <tr>
+                        <th>{{ sb.start_time|slice:5 }}</th>
+                        <th>{{ sb.subject.name_of_subject }}
+                            <p>{{ sb.teacher.last_name }} {{ sb.teacher.first_name }} {{ sb.teacher.middle_name }}</p>
+                        </th>
+                        <th>{{ sb.structure.structure_name }} {{ sb.auditory.auditory_number }}</th>
+                    </tr>
+                {% endfor %}
+                </tbody>
+            </table>
+        {% endif %}
+    {% else %}
+        <h3>На данный момент для вашей группы не были распределены пары. Дождитесь распределения
+            от администратора сайта</h3>
+    {% endif %}
+{% endblock %}

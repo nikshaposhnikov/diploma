@@ -14,6 +14,7 @@ from django.contrib import messages
 from django.views.generic import UpdateView, CreateView, TemplateView, DeleteView
 from django.contrib.messages.views import SuccessMessageMixin
 from django.urls import reverse_lazy
+from django.db.models import Count
 
 from .utilities import signer
 from .models import AdvUser, SubGroup, Bb, Comment, Subject, AdditionalFile
@@ -55,6 +56,8 @@ Search bbs
 '''
 
 
+@user_required
+@teacher_required
 def by_group(request, pk):
     group = get_object_or_404(SubGroup, pk=pk)
     bbs = Bb.objects.filter(is_active=True, group=pk)
@@ -80,6 +83,28 @@ def by_group(request, pk):
 class DeleteUserView(LoginRequiredMixin, DeleteView):
     model = AdvUser
     template_name = 'main/delete_user.html'
+    success_url = reverse_lazy('main:index')
+
+    def dispatch(self, request, *args, **kwargs):
+        comments = Comment.objects.filter(author=request.user.username)
+        comments.delete()
+        self.user_id = request.user.pk
+        return super().dispatch(request, *args, **kwargs)
+
+    def post(self, request, *args, **kwargs):
+        logout(request)
+        messages.add_message(request, messages.SUCCESS, 'Пользователь удалён')
+        return super().post(request, *args, **kwargs)
+
+    def get_object(self, queryset=None):
+        if not queryset:
+            queryset = self.get_queryset()
+        return get_object_or_404(queryset, pk=self.user_id)
+
+
+class DeleteTeacherView(LoginRequiredMixin, DeleteView):
+    model = Teacher
+    template_name = 'main/delete_teacher.html'
     success_url = reverse_lazy('main:index')
 
     def dispatch(self, request, *args, **kwargs):
@@ -359,57 +384,80 @@ def profile(request):
     return render(request, 'main/profile.html', context)
 
 
-@student_required
+def list_schedule(request):
+    shs = Schedule.objects.all()
+    context = {'shs': shs, }
+    return render(request, 'main/schedule.html', context)
+
+
+def detail_schedule(request, pk):
+    sh = get_object_or_404(Schedule, pk=pk)
+    ais = sh.additionalschedule_set.all()
+    sbs_monday = AdditionalSchedule.objects.filter(schedule=pk, day='0').order_by('day',
+                                                                                         'start_time')
+    sbs_tuesday = AdditionalSchedule.objects.filter(schedule=pk, day='1').order_by('day',
+                                                                      'start_time')
+    sbs_wednesday = AdditionalSchedule.objects.filter(schedule=pk, day='2').order_by('day',
+                                                                        'start_time')
+    sbs_thursday = AdditionalSchedule.objects.filter(schedule=pk, day='3').order_by('day',
+                                                                       'start_time')
+
+    sbs_friday = AdditionalSchedule.objects.filter(schedule=pk, day='4').order_by('day',
+                                                                     'start_time')
+    sbs_saturday = AdditionalSchedule.objects.filter(schedule=pk, day='5').order_by('day',
+                                                                       'start_time')
+    context = {'sh': sh, 'ais': ais, 'sbs_monday': sbs_monday, 'sbs_tuesday': sbs_tuesday,
+               'sbs_wednesday': sbs_wednesday,
+               'sbs_thursday': sbs_thursday, 'sbs_friday': sbs_friday, 'sbs_saturday': sbs_saturday, }
+    return render(request, 'main/detail_schedule.html', context)
+
+
+
 @login_required
+@student_required
 def student_schedule(request):
-    sbs = AdditionalSchedule.objects.filter(schedule__group=request.user.group)
+    sbs = AdditionalSchedule.objects.filter(schedule__group=request.user.group).order_by('day', 'start_time')
 
-    first_sub_monday = []
-    for sb in sbs:
-        if sb.day == '0' and sb.start_time == '08:30:00':
-            first_sub_monday.append(sb)
-            break
-        else:
-            break
-    print(first_sub_monday)
+    sbs_monday = AdditionalSchedule.objects.filter(schedule__group=request.user.group, day='0').order_by('day',
+                                                                                                         'start_time')
+    sbs_tuesday = AdditionalSchedule.objects.filter(schedule__group=request.user.group, day='1').order_by('day',
+                                                                                                          'start_time')
+    sbs_wednesday = AdditionalSchedule.objects.filter(schedule__group=request.user.group, day='2').order_by('day',
+                                                                                                            'start_time')
+    sbs_thursday = AdditionalSchedule.objects.filter(schedule__group=request.user.group, day='3').order_by('day',
+                                                                                                           'start_time')
 
-    first_sub_tuesday = []
-    for sb in sbs:
-        if sb.day == '1' and sb.start_time == '08:30:00':
-            first_sub_tuesday.append(sb)
-            break
-        else:
-            break
-    print(first_sub_tuesday)
+    sbs_friday = AdditionalSchedule.objects.filter(schedule__group=request.user.group, day='4').order_by('day',
+                                                                                                         'start_time')
+    sbs_saturday = AdditionalSchedule.objects.filter(schedule__group=request.user.group, day='5').order_by('day',
+                                                                                                           'start_time')
 
-    first_sub_wednesday = []
-    for sb in sbs:
-        if sb.day == '2' and sb.start_time == '08:30:00':
-            first_sub_wednesday.append(sb)
-            break
+    scheduler = {}
+
+    for items in sbs:
+        if items.day not in scheduler:
+            scheduler[items.day] = [{
+                field: value for field, value in vars(items).items() if not field.startswith('day')
+            }]
         else:
-            break
-    print(first_sub_wednesday)
+            scheduler[items.day] += [{
+                field: value for field, value in vars(items).items() if not field.startswith('day')
+            }]
+
+    schedule = []
+    for sb in sbs:
+        if sb.day not in schedule:
+            schedule.append(
+                [sb.get_day_display, sb.start_time, sb.subject.name_of_subject, sb.teacher.last_name,
+                 sb.teacher.first_name,
+                 sb.teacher.middle_name, sb.structure.structure_name, sb.auditory.auditory_number])
 
     '''
     GET CERTAIN SUBJECTS ON CERTAIN DAYS
     '''
-    sbs_monday = AdditionalSchedule.objects.filter(schedule__group=request.user.group, day='0')
-    sbs_tuesday = AdditionalSchedule.objects.filter(schedule__group=request.user.group, day='1')
-    sbs_wednesday = AdditionalSchedule.objects.filter(schedule__group=request.user.group, day='2')
-    sbs_thursday = AdditionalSchedule.objects.filter(schedule__group=request.user.group, day='3')
-    sbs_friday = AdditionalSchedule.objects.filter(schedule__group=request.user.group, day='4')
-    sbs_saturday = AdditionalSchedule.objects.filter(schedule__group=request.user.group, day='5')
 
-    context = {'sbs': sbs, 'header': [' ', 'Понедельник', ' ', 'Вторник', ' ', 'Среда', ' ', 'Четверг', ' ', 'Пятница',
-                                      ' ', 'Суббота', ' '],
-               'rows': [{'time': '8:30', 'first_sub_monday': first_sub_monday, 'first_sub_tuesday': first_sub_tuesday,
-                         'first_sub_wednesday': first_sub_wednesday, },
-                        {'time': '10:25', 'chemblid': 31290, 'prefName': 'B'},
-                        {'time': '12:35', 'chemblid': 98765, 'prefName': 'C'},
-                        {'time': '14:30', 'chemblid': 98765, 'prefName': 'C'},
-                        {'time': '16:25', 'chemblid': 98765, 'prefName': 'C'},
-                        {'time': '18:10', 'chemblid': 98765, 'prefName': 'C'}]}
+    context = {'sbs': sbs, 'sbs_monday': sbs_monday, 'sbs_tuesday': sbs_tuesday, 'sbs_wednesday': sbs_wednesday,
+               'sbs_thursday': sbs_thursday, 'sbs_friday': sbs_friday, 'sbs_saturday': sbs_saturday, }
     return render(request, 'main/schedule.html', context)
 
 
@@ -452,7 +500,7 @@ def login_page(request):
         if user is not None and user.is_teacher:
             login(request, user)
             return redirect('main:teacher_subjects')
-        elif user.is_superuser:
+        elif user is not None and user.is_superuser:
             login(request, user)
             return HttpResponseRedirect('../admin/')
         elif user is not None:

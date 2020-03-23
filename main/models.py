@@ -71,12 +71,34 @@ class Schedule(models.Model):
 
 class AdditionalSchedule(models.Model):
     schedule = models.ForeignKey('Schedule', on_delete=models.CASCADE, verbose_name='Расписание')
-    subject = models.ForeignKey('Subject', on_delete=models.CASCADE, verbose_name='Дисциплина')
-    teacher = models.ForeignKey('Teacher', on_delete=models.SET_NULL, null=True, verbose_name='Преподаватель')
+    subject = models.ForeignKey('Subject', on_delete=models.PROTECT, null=True, verbose_name='Дисциплина')
+    teacher = models.ForeignKey('Teacher', on_delete=models.CASCADE, null=True, verbose_name='Преподаватель')
     structure = models.ForeignKey('Structure', on_delete=models.PROTECT, null=True, verbose_name='Учебный корпус')
     auditory = models.ForeignKey('Auditory', on_delete=models.PROTECT, null=True, verbose_name='Аудитория')
     start_time = models.CharField(max_length=10, choices=TIME_CHOICES, null=True, verbose_name='Начало занятия')
     day = models.CharField(max_length=1, choices=DAYS_OF_WEEK, null=True, verbose_name='День недели')
+
+    # def clean(self):
+    #     try:
+    #         AdditionalSchedule.objects.get(start_time=self.cleaned_data['start_time'],
+    #                                        day=self.cleaned_data['day'])
+    #         # if we get this far, we have an exact match for this form's data
+    #         raise self.ValidationError("Exists already!")
+    #     except AdditionalSchedule.DoesNotExist:
+    #         # because we didn't get a match
+    #         pass
+    #
+    #     return self.cleaned_data
+
+    # def clean(self, *args, **kwargs):
+    #
+    #     sh = AdditionalSchedule.objects.filter(schedule=self.schedule, start_time=self.start_time,
+    #                                            day=self.day)
+    #     if (AdditionalSchedule.objects.filter(schedule=self.schedule, start_time=self.start_time,
+    #                                            day=self.day).exists()):
+    #         raise ValidationError('Нельзя назначить пару в одно и тоже время!')
+    #     else:
+    #         super(AdditionalSchedule, self).clean(*args, **kwargs)
 
     def __str__(self):
         return 'Добавление занятий'
@@ -91,7 +113,6 @@ class Subject(models.Model):
 
     def __str__(self):
         return self.name_of_subject
-
 
     class Meta:
         verbose_name_plural = 'Предметы'
@@ -149,7 +170,7 @@ class AdditionalImage(models.Model):
 
 
 class Bb(models.Model):
-    group = models.ForeignKey('SubGroup', on_delete=models.PROTECT, verbose_name='Группа')
+    group = models.ForeignKey('SubGroup', on_delete=models.CASCADE, verbose_name='Группа')
     title = models.CharField(max_length=40, verbose_name='Заголовок')
     content = models.TextField(verbose_name='Информация')
     image = models.ImageField(blank=True, upload_to=get_timestamp_path, verbose_name='Изображение')
@@ -238,8 +259,6 @@ class AdvUser(AbstractUser):
 
     def delete(self, *args, **kwargs):
         Comment.objects.filter(author=self.username).delete()
-        for bb in self.bb_set.all():
-            bb.delete()
         super().delete(*args, **kwargs)
 
     def full_name(obj):
@@ -259,6 +278,12 @@ class Teacher(AdvUser):
     degree = models.CharField(max_length=100, blank=True, verbose_name='Степень')
     rank = models.CharField(max_length=40, blank=True, verbose_name='Звание')
 
+    def delete(self, *args, **kwargs):
+        Comment.objects.filter(author=self.username).delete()
+        for bb in self.bb_set.all():
+            bb.delete()
+        super().delete(*args, **kwargs)
+
     def full_name(obj):
         return "%s %s %s" % (obj.last_name, obj.first_name, obj.middle_name)
 
@@ -277,15 +302,19 @@ def notify_admin(sender, instance, created, **kwargs):
         if ALLOWED_HOSTS:
             host = 'http://' + ALLOWED_HOSTS[0] + '/admin/main/teacher'
         else:
-            host = 'http://localhost:8000/admin/main/teacher/?q=' + instance.username
-
+            host = 'http://localhost:8000/admin/main/teacher/?q=' + instance.last_name + "+" + instance.first_name
             subject = 'Создан новый преподаватель'
-            html_message = '<p>Был зарегистрирован пользователь под логином <strong>%s</strong>.' \
-                           '<p>Активируйте пользователя %s в админ-панели %s, ' \
-                           'если это действительно преподаватель.</p> ' \
-                           % (instance.username, instance.username, host)
+            html_message = '<p>Был зарегистрирован преподаватель <strong>%s</strong> <strong>%s</strong> ' \
+                           '<strong>%s</strong>.' \
+                           '<p>Активируйте пользователя в <a href="%s">админ-панели</a>, ' \
+                           'если это действительно преподаватель, либо удалите, если это не так.</p> ' \
+                           % (instance.last_name, instance.first_name, instance.middle_name, host)
             from_addr = instance.email
-            recipient_list = ('klandodo@gmail.com',)
+            admin = AdvUser.objects.filter(username='admin')
+            email = ''
+            for a in admin:
+                email = a.email
+            recipient_list = (email,)
             msg = EmailMultiAlternatives(subject, html_message, from_addr, recipient_list)
             msg.content_subtype = "html"  # Main content is now text/html
             msg.send()

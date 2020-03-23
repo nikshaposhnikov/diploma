@@ -71,7 +71,7 @@ class RegisterTeacherForm(forms.ModelForm):
     degree = forms.CharField(required=False, label='Степень', widget=forms.TextInput)
     rank = forms.CharField(required=False, label='Звание', widget=forms.TextInput)
 
-    # is_teacher = forms.BooleanField(required=True, label='Преподаватель')
+    is_teacher = forms.BooleanField(required=True, label='Преподаватель')
 
     def clean_email(self):
         email = self.cleaned_data['email'].lower()
@@ -201,7 +201,6 @@ class ChangeUserInfoForm(forms.ModelForm):
     first_name = forms.CharField(required=True, label='Имя', widget=forms.TextInput)
     last_name = forms.CharField(required=True, label='Фамилия', widget=forms.TextInput)
     email = forms.EmailField(required=True, label='Адрес электронной почты')
-    group = forms.ModelChoiceField(queryset=SubGroup.objects.all(), required=True, label='Группа')
 
     def clean_email(self):
         email = self.cleaned_data['email'].lower()
@@ -217,21 +216,22 @@ class ChangeUserInfoForm(forms.ModelForm):
             raise ValidationError("Этот логин занят")
         return username
 
-    def __init__(self, *args, **kwargs):
-        super(ChangeUserInfoForm, self).__init__(*args, **kwargs)
-        instance = getattr(self, 'instance', None)
-        if instance and instance.id:
-            self.fields['group'].widget.attrs['disabled'] = 'disabled'
+    # def __init__(self, *args, **kwargs):
+    #     super(ChangeUserInfoForm, self).__init__(*args, **kwargs)
+    #     instance = getattr(self, 'instance', None)
+    #     if instance and instance.id:
+    #         self.fields['group'].widget.attrs['disabled'] = 'disabled'
 
     class Meta:
         model = AdvUser
-        fields = ('username', 'first_name', 'last_name', 'email', 'group')
+        fields = ('username', 'first_name', 'last_name', 'email')
 
 
 
 class LoginForm(forms.ModelForm):
     username = forms.CharField(required=True, label='Логин')
     password = forms.CharField(label='Пароль', widget=forms.PasswordInput)
+
 
     class Meta:
         model = AdvUser

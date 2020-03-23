@@ -40,6 +40,9 @@ urlpatterns = [
     path('accounts/profile/subject/<int:pk>/', profile_sub_detail, name='profile_sub_detail'),
     path('accounts/profile/', profile, name='profile'),
     path('accounts/profile/subjects', teacher_subjects, name='teacher_subjects'),
+    path('list_schedule/', list_schedule, name='list_schedule'),
+    path('list_schedule/detail_schedule/<int:pk>/', detail_schedule, name='detail_schedule'),
+    path('accounts/profile/delete_teacher', DeleteTeacherView.as_view(), name='profile_teacher_delete'),
 
     # Student functionality
     path('accounts/profile/student_subjects', student_subjects, name='student_subjects'),

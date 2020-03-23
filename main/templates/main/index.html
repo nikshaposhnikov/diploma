@@ -29,8 +29,6 @@
                         {% endif %}
                     </a>
                     <div class="media-body">
-                        <p>Форма обучения: {{ bb.group.super_group }}</p>
-                        <p>Группа: {{ bb.group.name }}</p>
                         {% if bb.author.first_name and bb.author.last_name and bb.author.teacher.middle_name %}
                             <p>Автор: {{ bb.author.last_name }} {{ bb.author.first_name }}
                                 {{ bb.author.teacher.middle_name }} </p>

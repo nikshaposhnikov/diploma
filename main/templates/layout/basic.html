@@ -28,16 +28,15 @@
                     {% if user.is_teacher %}
                         <a class="dropdown-item" href="{% url 'main:profile' %}">Мои объявления</a>
                         <a class="dropdown-item" href="{% url 'main:teacher_subjects' %}">Мои дисциплины</a>
-                        <a class="dropdown-item" href="#">Расписание</a>
+                        <a class="dropdown-item" href="{% url 'main:list_schedule' %}">Расписание</a>
                         <a class="dropdown-item" href="{% url 'main:profile_teacher_change' %}">Изменить личные
                             данные</a>
                         <a class="dropdown-item" href="{% url 'main:password_change' %}">Изменить пароль</a>
                         <div class="dropdown-divider"></div>
                         <a class="dropdown-item" href="{% url 'main:logout' %}">Выйти</a>
                         <div class="dropdown-divider"></div>
-                        <a class="dropdown-item" href="{% url 'main:profile_delete' %}">Удалить</a>
+                        <a class="dropdown-item" href="{% url 'main:profile_teacher_delete' %}">Удалить</a>
                     {% else %}
-                        <a class="dropdown-item" href="{% url 'main:student_profile' %}">Объявления для моей группы</a>
                         <a class="dropdown-item" href="{% url 'main:student_subjects' %}">Мои дисциплины</a>
                         <a class="dropdown-item" href="{% url 'main:student_schedule' %}">Расписание моей группы</a>
                         <a class="dropdown-item" href="{% url 'main:profile_change' %}">Изменить личные данные</a>
@@ -58,21 +57,25 @@
     {% if user.is_anonymous %}
         <nav class="col-md-auto nav flex-column border">
             <a class="nav-link root" href="{% url 'main:index' %}">Главная</a>
+            <a class="nav-link root" href="{% url 'main:list_schedule' %}">Расписание</a>
             <a class="nav-link root" href="{% url 'main:other' page='about' %}">О сайте</a>
         </nav>
-    {% else %}
+    {% elif user.is_teacher %}
         <nav class="col-md-auto nav flex-column border">
             <a class="nav-link root" href="{% url 'main:index' %}">Главная</a>
-        {% if user.is_teacher %}
             {% for group in groups %}
                 {% ifchanged group.super_group.pk %}
                     <span class="nav-link root font-weight-bold">
                 {{ group.super_group.name }}</span>
                 {% endifchanged %}
                 <a class="nav-link" href="{% url 'main:by_group' pk=group.pk %}">
-                    {{ group.name }}</a>
+                    {{ group.name|slice:16 }}</a>
             {% endfor %}
-            {% endif %}
+        </nav>
+    {% else %}
+        <nav class="col-md-auto nav flex-column border">
+            <a class="nav-link root" href="{% url 'main:index' %}">Главная</a>
+            <a class="nav-link root" href="{% url 'main:student_profile' %}">Объявления для моей группы</a>
             <a class="nav-link root" href="{% url 'main:other' page='about' %}">О сайте</a>
         </nav>
     {% endif %}
