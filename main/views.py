@@ -208,8 +208,8 @@ class BBLogoutView(LoginRequiredMixin, LogoutView):
     template_name = 'main/logout.html'
 
 
+@user_required
 @user_is_entry_author
-@login_required
 def comment_delete(request, group_pk, bb_pk, pk):
     comment = get_object_or_404(Comment, pk=pk)
     if request.method == 'POST':
@@ -221,8 +221,8 @@ def comment_delete(request, group_pk, bb_pk, pk):
         return render(request, 'main/comment_delete.html', context)
 
 
+@user_required
 @user_is_entry_author
-@login_required
 def comment_change(request, group_pk, bb_pk, pk):
     comment = get_object_or_404(Comment, pk=pk)
     if request.method == 'POST':
@@ -237,8 +237,8 @@ def comment_change(request, group_pk, bb_pk, pk):
     return render(request, 'main/comment_change.html', context)
 
 
+@user_required
 @teacher_required
-@login_required
 def profile_bb_delete(request, pk):
     bb = get_object_or_404(Bb, pk=pk)
     if request.method == 'POST':
@@ -250,8 +250,8 @@ def profile_bb_delete(request, pk):
         return render(request, 'main/profile_bb_delete.html', context)
 
 
+@user_required
 @teacher_required
-@login_required
 def profile_bb_change(request, pk):
     bb = get_object_or_404(Bb, pk=pk)
     if request.method == 'POST':
@@ -270,8 +270,8 @@ def profile_bb_change(request, pk):
     return render(request, 'main/profile_bb_change.html', context)
 
 
+@user_required
 @teacher_required
-@login_required
 def profile_bb_add(request):
     if request.method == 'POST':
         form = BbForm(request.POST, request.FILES)
@@ -289,8 +289,8 @@ def profile_bb_add(request):
     return render(request, 'main/profile_bb_add.html', context)
 
 
+@user_required
 @teacher_required
-@login_required
 def profile_file_add(request, pk):
     sub = get_object_or_404(Subject, pk=pk)
     if request.method == 'POST':
@@ -305,7 +305,7 @@ def profile_file_add(request, pk):
     return render(request, 'main/profile_file_add.html', context)
 
 
-@login_required
+@user_required
 def profile_sub_detail(request, pk):
     sub = get_object_or_404(Subject, pk=pk)
     ais = sub.additionalfile_set.all()
@@ -314,7 +314,7 @@ def profile_sub_detail(request, pk):
     return render(request, 'main/profile_sub_detail.html', context)
 
 
-@login_required
+@user_required
 def profile_bb_detail(request, pk):
     bb = get_object_or_404(Bb, pk=pk)
     ais = bb.additionalimage_set.all()
@@ -338,8 +338,8 @@ def profile_bb_detail(request, pk):
     return render(request, 'main/profile_bb_detail.html', context)
 
 
+@user_required
 @student_required
-@login_required
 def student_profile(request):
     bbs = Bb.objects.filter(group=request.user.group.pk)
     if 'keyword' in request.GET:
@@ -361,8 +361,8 @@ def student_profile(request):
     return render(request, 'main/profile.html', context)
 
 
+@user_required
 @teacher_required
-@login_required
 def profile(request):
     bbs = Bb.objects.filter(author=request.user.pk)
     if 'keyword' in request.GET:
@@ -413,7 +413,7 @@ def detail_schedule(request, pk):
 
 
 
-@login_required
+@user_required
 @student_required
 def student_schedule(request):
     sbs = AdditionalSchedule.objects.filter(schedule__group=request.user.group).order_by('day', 'start_time')
@@ -461,8 +461,8 @@ def student_schedule(request):
     return render(request, 'main/schedule.html', context)
 
 
+@user_required
 @student_required
-@login_required
 def student_subjects(request):
     sbs = AdditionalSchedule.objects.filter(schedule__group=request.user.group)
     paginator = Paginator(sbs, 8)
@@ -475,8 +475,8 @@ def student_subjects(request):
     return render(request, 'main/subjects.html', context)
 
 
+@user_required
 @teacher_required
-@login_required
 def teacher_subjects(request):
     sbs = AdditionalSchedule.objects.filter(teacher=request.user.pk)
     paginator = Paginator(sbs, 8)
