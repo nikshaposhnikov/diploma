@@ -506,7 +506,7 @@ def login_page(request):
             return redirect('main:teacher_subjects')
         elif user is not None and user.is_superuser:
             login(request, user)
-            return HttpResponseRedirect('../admin/')
+            return HttpResponseRedirect('../../admin/')
         elif user is not None:
             login(request, user)
             return redirect('main:student_profile')
