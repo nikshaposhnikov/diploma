@@ -300,30 +300,30 @@ def notify_student(sender, instance, created, **kwargs):
     if created:
         signer = Signer()
         if ALLOWED_HOSTS:
-            host = 'http://' + ALLOWED_HOSTS[0]
+            host = 'http://' + ALLOWED_HOSTS[0] + '/accounts/profile/' + str(instance.pk)
         else:
             host = 'http://localhost:8000/accounts/profile/' + str(instance.pk)
-            subject = 'Добавлено новое объявление'
-            html_message = '<p>Для вашей группы было добавлено новое объявление.</p>' \
-                           '<p>Для того, чтобы его прочитать, перейдите по ссылке: <br\>' \
-                           '<a href="%s">%s</a></p> ' \
-                           '<p>С уажением, администрация сайта Teach&Study</p> ' \
-                           % (host, host)
-            admin = AdvUser.objects.filter(username='admin')
-            email = ''
-            for a in admin:
-                email = a.email
-            from_addr = email
-            students = AdvUser.objects.filter(group=instance.group)
-            students_email = []
-            for s in students:
-                if s.email not in students_email:
-                    students_email.append(s.email)
-            for e in students_email:
-                recipient_list = (e,)
-                msg = EmailMultiAlternatives(subject, html_message, from_addr, recipient_list)
-                msg.content_subtype = "html"  # Main content is now text/html
-                msg.send()
+        subject = 'Добавлено новое объявление'
+        html_message = '<p>Для вашей группы было добавлено новое объявление.</p>' \
+                       '<p>Для того, чтобы его прочитать, перейдите по ссылке: <br\>' \
+                       '<a href="%s">%s</a></p> ' \
+                       '<p>С уажением, администрация сайта Teach&Study</p> ' \
+                       % (host, host)
+        admin = AdvUser.objects.filter(username='admin')
+        email = ''
+        for a in admin:
+            email = a.email
+        from_addr = email
+        students = AdvUser.objects.filter(group=instance.group)
+        students_email = []
+        for s in students:
+            if s.email not in students_email:
+                students_email.append(s.email)
+        for e in students_email:
+            recipient_list = (e,)
+            msg = EmailMultiAlternatives(subject, html_message, from_addr, recipient_list)
+            msg.content_subtype = "html"  # Main content is now text/html
+            msg.send()
 
 
 signals.post_save.connect(notify_student, sender=Bb)
@@ -334,46 +334,46 @@ def notify_admin(sender, instance, created, **kwargs):
     if created:
         signer = Signer()
         if ALLOWED_HOSTS:
-            host = 'http://' + ALLOWED_HOSTS[0] + '/admin/main/teacher'
+            host = 'http://' + ALLOWED_HOSTS[
+                0] + '/admin/main/teacher/?q=' + instance.last_name + "+" + instance.first_name
         else:
             host = 'http://localhost:8000/admin/main/teacher/?q=' + instance.last_name + "+" + instance.first_name
-            subject = 'Создан новый преподаватель'
-            html_message = '<p>Был зарегистрирован преподаватель <strong>%s</strong> <strong>%s</strong> ' \
-                           '<strong>%s</strong>.' \
-                           '<p>Активируйте пользователя в <a href="%s">админ-панели</a>, ' \
-                           'если это действительно преподаватель, либо удалите, если это не так.</p> ' \
-                           % (instance.last_name, instance.first_name, instance.middle_name, host)
-            from_addr = instance.email
-            admin = AdvUser.objects.filter(username='admin')
-            email = ''
-            for a in admin:
-                email = a.email
-            recipient_list = (email,)
-            msg = EmailMultiAlternatives(subject, html_message, from_addr, recipient_list)
-            msg.content_subtype = "html"  # Main content is now text/html
-            msg.send()
-    else:
+        subject = 'Создан новый преподаватель'
+        html_message = '<p>Был зарегистрирован преподаватель <strong>%s</strong> <strong>%s</strong> ' \
+                       '<strong>%s</strong>.' \
+                       '<p>Активируйте пользователя в <a href="%s">админ-панели</a>, ' \
+                       'если это действительно преподаватель, либо удалите, если это не так.</p> ' \
+                       % (instance.last_name, instance.first_name, instance.middle_name, host)
+        from_addr = instance.email
+        admin = AdvUser.objects.filter(username='admin')
+        email = ''
+        for a in admin:
+            email = a.email
+        recipient_list = (email,)
+        msg = EmailMultiAlternatives(subject, html_message, from_addr, recipient_list)
+        msg.content_subtype = "html"  # Main content is now text/html
+        msg.send()
+    if instance.is_activated and instance.is_active:
         signer = Signer()
         if ALLOWED_HOSTS:
-            host = 'http://' + ALLOWED_HOSTS[0]
+            host = 'http://' + ALLOWED_HOSTS[0] + '/accounts/login/'
         else:
-            host = 'http://localhost:8000/accounts/login'
-            subject = 'Активация аккаунта'
-            html_message = '<p>Вы были зарегистрированы на сайте <i>Teach&Study</i>.</p>' \
-                           '<p>Теперь вы можете <a href="%s">войти</a> на сайт с правами преподавателя.</p>' \
-                           '<p>Приветствуем вас, коллега.</p> <br\>' \
-                           '<p>С уважением, администрация сайта Teach&Study</p> ' \
-                           % (host,)
-            admin = AdvUser.objects.filter(username='admin')
-            email = ''
-            for a in admin:
-                email = a.email
-            from_addr = email
-            recipient_list = (instance.email,)
-            msg = EmailMultiAlternatives(subject, html_message, from_addr, recipient_list)
-            msg.content_subtype = "html"  # Main content is now text/html
-            msg.send()
+            host = 'http://localhost:8000/accounts/login/'
+        subject = 'Активация аккаунта'
+        html_message = '<p>Вы были зарегистрированы на сайте <i>Teach&Study</i>.</p>' \
+                       '<p>Теперь вы можете <a href="%s">войти</a> на сайт с правами преподавателя.</p>' \
+                       '<p>Приветствуем вас, коллега.</p> <br\>' \
+                       '<p>С уважением, администрация сайта Teach&Study</p> ' \
+                       % (host,)
+        admin = AdvUser.objects.filter(username='admin')
+        email = ''
+        for a in admin:
+            email = a.email
+        from_addr = email
+        recipient_list = (instance.email,)
+        msg = EmailMultiAlternatives(subject, html_message, from_addr, recipient_list)
+        msg.content_subtype = "html"  # Main content is now text/html
+        msg.send()
 
 
 signals.post_save.connect(notify_admin, sender=Teacher)
-

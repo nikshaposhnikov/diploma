@@ -144,6 +144,10 @@ class RegisterDoneView(TemplateView):
     template_name = 'main/register_done.html'
 
 
+class RegisterTeacherDoneView(TemplateView):
+    template_name = 'main/register_teacher_done.html'
+
+
 class RegisterUserView(CreateView):
     model = AdvUser
     template_name = 'main/register_user.html'
@@ -155,7 +159,7 @@ class RegisterTeacherView(CreateView):
     model = AdvUser
     template_name = 'main/teacher_register.html'
     form_class = RegisterTeacherForm
-    success_url = reverse_lazy('main:register_done')
+    success_url = reverse_lazy('main:register_teacher_done')
 
 
 class BBPasswordResetView(PasswordResetView):
