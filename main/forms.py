@@ -58,20 +58,20 @@ class EmailValidationOnForgotPassword(PasswordResetForm):
 
 
 class RegisterTeacherForm(forms.ModelForm):
-    username = forms.CharField(required=True, label='Логин', widget=forms.TextInput)
-    first_name = forms.CharField(required=True, label='Имя', widget=forms.TextInput)
-    last_name = forms.CharField(required=True, label='Фамилия', widget=forms.TextInput)
-    middle_name = forms.CharField(required=True, label='Отчество', widget=forms.TextInput)
-    email = forms.EmailField(required=True, label='Адрес электронной почты')
-    password1 = forms.CharField(label='Пароль', widget=forms.PasswordInput,
+    username = forms.CharField(required=True, label='Логин*', widget=forms.TextInput)
+    first_name = forms.CharField(required=True, label='Имя*', widget=forms.TextInput)
+    last_name = forms.CharField(required=True, label='Фамилия*', widget=forms.TextInput)
+    middle_name = forms.CharField(required=True, label='Отчество*', widget=forms.TextInput)
+    email = forms.EmailField(required=True, label='Адрес электронной почты*')
+    password1 = forms.CharField(label='Пароль*', widget=forms.PasswordInput,
                                 help_text=password_validation.password_validators_help_text_html())
-    password2 = forms.CharField(label='Пароль (повторно)', widget=forms.PasswordInput,
+    password2 = forms.CharField(label='Пароль (повторно)*', widget=forms.PasswordInput,
                                 help_text='Повторите пароль')
-    position = forms.CharField(required=True, label='Должность', widget=forms.TextInput)
+    position = forms.CharField(required=True, label='Должность*', widget=forms.TextInput)
     degree = forms.CharField(required=False, label='Степень', widget=forms.TextInput)
     rank = forms.CharField(required=False, label='Звание', widget=forms.TextInput)
 
-    is_teacher = forms.BooleanField(required=True, label='Преподаватель')
+    is_teacher = forms.BooleanField(required=True, label='Преподаватель', initial=True, widget=forms.HiddenInput())
 
     def clean_email(self):
         email = self.cleaned_data['email'].lower()
@@ -110,19 +110,19 @@ class RegisterTeacherForm(forms.ModelForm):
 
     class Meta:
         model = Teacher
-        fields = ('username', 'email', 'password1', 'password2', 'first_name', 'last_name', 'middle_name',
+        fields = ('username', 'email', 'password1', 'password2', 'last_name', 'first_name', 'middle_name',
                   'position', 'degree', 'rank', 'send_messages', 'is_teacher')
 
 
 class RegisterUserForm(forms.ModelForm):
-    username = forms.CharField(required=True, label='Логин', widget=forms.TextInput)
-    first_name = forms.CharField(required=True, label='Имя', widget=forms.TextInput)
-    last_name = forms.CharField(required=True, label='Фамилия', widget=forms.TextInput)
-    group = forms.ModelChoiceField(queryset=SubGroup.objects.all(), required=True, label='Группа')
-    email = forms.EmailField(required=True, label='Адрес электронной почты')
-    password1 = forms.CharField(label='Пароль', widget=forms.PasswordInput,
+    username = forms.CharField(required=True, label='Логин*', widget=forms.TextInput)
+    first_name = forms.CharField(required=True, label='Имя*', widget=forms.TextInput)
+    last_name = forms.CharField(required=True, label='Фамилия*', widget=forms.TextInput)
+    group = forms.ModelChoiceField(queryset=SubGroup.objects.all(), required=True, label='Группа*')
+    email = forms.EmailField(required=True, label='Адрес электронной почты*')
+    password1 = forms.CharField(label='Пароль*', widget=forms.PasswordInput,
                                 help_text=password_validation.password_validators_help_text_html())
-    password2 = forms.CharField(label='Пароль (повторно)', widget=forms.PasswordInput,
+    password2 = forms.CharField(label='Пароль (повторно)*', widget=forms.PasswordInput,
                                 help_text='Повторите пароль')
 
     def clean_email(self):
@@ -163,7 +163,7 @@ class RegisterUserForm(forms.ModelForm):
 
     class Meta:
         model = AdvUser
-        fields = ('username', 'email', 'password1', 'password2', 'first_name', 'last_name', 'group')
+        fields = ('username', 'email', 'password1', 'password2','last_name', 'first_name', 'group')
 
 
 class ChangeTeacherInfoForm(forms.ModelForm):
@@ -227,11 +227,9 @@ class ChangeUserInfoForm(forms.ModelForm):
         fields = ('username', 'first_name', 'last_name', 'email')
 
 
-
 class LoginForm(forms.ModelForm):
     username = forms.CharField(required=True, label='Логин')
     password = forms.CharField(label='Пароль', widget=forms.PasswordInput)
-
 
     class Meta:
         model = AdvUser
