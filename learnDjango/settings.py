@@ -29,7 +29,7 @@ DEBUG = bool( os.environ.get('DJANGO_DEBUG', True) )
 if DEBUG:
     EMAIL_BACKEND = 'django.core.mail.backends.smtp.EmailBackend'
 
-ALLOWED_HOSTS = []
+ALLOWED_HOSTS = ['teach-study.herokuapp.com']
 
 CORS_ORIGIN_ALLOW_ALL = True
 CORS_URLS_REGEX = r'^/api/.*$'
