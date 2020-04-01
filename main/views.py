@@ -14,10 +14,17 @@ from django.contrib import messages
 from django.views.generic import UpdateView, CreateView, TemplateView, DeleteView
 from django.contrib.messages.views import SuccessMessageMixin
 from django.urls import reverse_lazy
-from django.db.models import Count
+from django.views.generic.edit import FormView
+from django.utils.decorators import method_decorator
+from django.contrib.auth import (
+    REDIRECT_FIELD_NAME, get_user_model, login as auth_login,
+    logout as auth_logout, update_session_auth_hash,
+)
+from django.views.decorators.debug import sensitive_post_parameters
+from django.utils.translation import gettext_lazy as _
+from django.views.decorators.csrf import csrf_protect
 
 from .utilities import signer
-from .models import AdvUser, SubGroup, Bb, Comment, Subject, AdditionalFile
 from .forms import *
 from .decorators import user_required, teacher_required, user_is_entry_author, student_required
 
@@ -168,10 +175,41 @@ class BBPasswordResetView(PasswordResetView):
     success_message = 'Письмо выслано на почту'
 
 
-class BBPasswordChangeView(SuccessMessageMixin, LoginRequiredMixin, PasswordChangeView):
+class PasswordContextMixin:
+    extra_context = None
+
+    def get_context_data(self, **kwargs):
+        context = super().get_context_data(**kwargs)
+        context.update({
+            'title': self.title,
+            **(self.extra_context or {})
+        })
+        return context
+
+
+class PasswordChangeView(PasswordContextMixin, FormView):
+    form_class = PasswordChangeForm
+    success_url = reverse_lazy('main:change_password_done')
     template_name = 'main/password_change.html'
-    success_url = reverse_lazy('main:profile')
-    success_message = 'Пароль пользователя изменён'
+    title = _('Password change')
+
+    @method_decorator(sensitive_post_parameters())
+    @method_decorator(csrf_protect)
+    @method_decorator(login_required)
+    def dispatch(self, *args, **kwargs):
+        return super().dispatch(*args, **kwargs)
+
+    def get_form_kwargs(self):
+        kwargs = super().get_form_kwargs()
+        kwargs['user'] = self.request.user
+        return kwargs
+
+    def form_valid(self, form):
+        form.save()
+        # Updating the password logs out all other sessions for the user
+        # except the current one.
+        update_session_auth_hash(self.request, form.user)
+        return super().form_valid(form)
 
 
 class ChangeTeacherInfoView(SuccessMessageMixin, LoginRequiredMixin, UpdateView):
@@ -398,23 +436,22 @@ def detail_schedule(request, pk):
     sh = get_object_or_404(Schedule, pk=pk)
     ais = sh.additionalschedule_set.all()
     sbs_monday = AdditionalSchedule.objects.filter(schedule=pk, day='0').order_by('day',
-                                                                                         'start_time')
+                                                                                  'start_time')
     sbs_tuesday = AdditionalSchedule.objects.filter(schedule=pk, day='1').order_by('day',
-                                                                      'start_time')
+                                                                                   'start_time')
     sbs_wednesday = AdditionalSchedule.objects.filter(schedule=pk, day='2').order_by('day',
-                                                                        'start_time')
+                                                                                     'start_time')
     sbs_thursday = AdditionalSchedule.objects.filter(schedule=pk, day='3').order_by('day',
-                                                                       'start_time')
+                                                                                    'start_time')
 
     sbs_friday = AdditionalSchedule.objects.filter(schedule=pk, day='4').order_by('day',
-                                                                     'start_time')
+                                                                                  'start_time')
     sbs_saturday = AdditionalSchedule.objects.filter(schedule=pk, day='5').order_by('day',
-                                                                       'start_time')
+                                                                                    'start_time')
     context = {'sh': sh, 'ais': ais, 'sbs_monday': sbs_monday, 'sbs_tuesday': sbs_tuesday,
                'sbs_wednesday': sbs_wednesday,
                'sbs_thursday': sbs_thursday, 'sbs_friday': sbs_friday, 'sbs_saturday': sbs_saturday, }
     return render(request, 'main/detail_schedule.html', context)
-
 
 
 @user_required
@@ -556,3 +593,7 @@ def reset_password_confirm(request):
 
 def reset_password_done(request):
     return render(request, 'registration/password_reset_done.html')
+
+
+def change_password_done(request):
+    return render(request, 'main/change_password_done.html')

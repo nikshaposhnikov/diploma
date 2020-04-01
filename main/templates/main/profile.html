@@ -9,9 +9,8 @@
 {% endblock %}
 
 {% block content %}
-    <h2>Профиль пользователя {{ user.username }}</h2>
     {% if user.first_name and user.last_name and user.teacher.middle_name %}
-        <p>Здравствуйте, {{ user.last_name }} {{ user.first_name }} {{ user.teacher.middle_name }}!</p>
+        <h2>Профиль пользователя {{ user.last_name }} {{ user.first_name }} {{ user.teacher.middle_name }}</h2>
         <p>Ваша должность: {{ user.teacher.position }}</p>
         {% if user.teacher.degree %}
             <p>Ваша степень: {{ user.teacher.degree }}</p>

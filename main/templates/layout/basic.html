@@ -22,8 +22,16 @@
         {% endif %}
         {% if user.is_authenticated %}
             <li class="nav-item dropdown">
-                <a class="nav-link dropdown-toggle" data-toggle="dropdown" href="#"
-                   role="button" aria-haspopup="true" aria-expanded="false">Профиль</a>
+                {% if user.is_teacher %}
+                    <a class="nav-link dropdown-toggle" data-toggle="dropdown" href="#"
+                       role="button" aria-haspopup="true"
+                       aria-expanded="false">{{ user.last_name }}
+                        {{ user.first_name }} {{ user.teacher.middle_name }}</a>
+                {% else %}
+                    <a class="nav-link dropdown-toggle" data-toggle="dropdown" href="#"
+                       role="button" aria-haspopup="true" aria-expanded="false">{{ user.last_name }}
+                        {{ user.first_name }}</a>
+                {% endif %}
                 <div class="dropdown-menu">
                     {% if user.is_teacher %}
                         <a class="dropdown-item" href="{% url 'main:profile' %}">Мои объявления</a>
