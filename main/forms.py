@@ -203,7 +203,7 @@ class ChangeUserInfoForm(forms.ModelForm):
     username = forms.CharField(required=True, label='Логин', widget=forms.TextInput)
     first_name = forms.CharField(required=True, label='Имя', widget=forms.TextInput)
     last_name = forms.CharField(required=True, label='Фамилия', widget=forms.TextInput)
-    email = forms.EmailField(required=True, label='Адрес электронной почты')
+    email = forms.EmailField(required=True, label='Адрес электронной почты', widget=forms.EmailInput)
 
     def clean_email(self):
         email = self.cleaned_data['email'].lower()
