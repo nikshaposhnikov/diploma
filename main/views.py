@@ -26,7 +26,7 @@ from django.views.decorators.csrf import csrf_protect
 
 from .utilities import signer
 from .forms import *
-from .decorators import user_required, teacher_required, user_is_entry_author, student_required
+from .decorators import user_required, teacher_required, user_is_entry_author, student_required, user_is_entry_to_group
 
 '''
 Details about the selected bb
@@ -35,14 +35,12 @@ Details about the selected bb
 
 @user_required
 def detail(request, group_pk, pk):
-    bb = Bb.objects.get(pk=pk)
+    bb = get_object_or_404(Bb, pk=pk)
     ais = bb.additionalimage_set.all()
     comments = Comment.objects.filter(bb=pk, is_active=True)
     initial = {'bb': bb.pk}
     if request.user.is_authenticated:
-        initial['author'] = request.user.username
-        form_class = UserCommentForm
-    else:
+        initial['author'] = request.user.pk
         form_class = UserCommentForm
     form = form_class(initial=initial)
     if request.method == 'POST':
@@ -93,7 +91,7 @@ class DeleteUserView(LoginRequiredMixin, DeleteView):
     success_url = reverse_lazy('main:index')
 
     def dispatch(self, request, *args, **kwargs):
-        comments = Comment.objects.filter(author=request.user.username)
+        comments = Comment.objects.filter(author=request.user.pk)
         comments.delete()
         self.user_id = request.user.pk
         return super().dispatch(request, *args, **kwargs)
@@ -115,7 +113,7 @@ class DeleteTeacherView(LoginRequiredMixin, DeleteView):
     success_url = reverse_lazy('main:index')
 
     def dispatch(self, request, *args, **kwargs):
-        comments = Comment.objects.filter(author=request.user.username)
+        comments = Comment.objects.filter(author=request.user.pk)
         comments.delete()
         self.user_id = request.user.pk
         return super().dispatch(request, *args, **kwargs)
@@ -133,10 +131,10 @@ class DeleteTeacherView(LoginRequiredMixin, DeleteView):
 
 def user_activate(request, sign):
     try:
-        username = signer.unsign(sign)
+        email = signer.unsign(sign)
     except BadSignature:
         return render(request, 'main/bad_signature.html')
-    user = get_object_or_404(AdvUser, username=username)
+    user = get_object_or_404(AdvUser, email=email)
     if user.is_activated:
         template = 'main/user_is_activated.html'
     else:
@@ -351,19 +349,36 @@ def profile_file_add(request, pk):
 def profile_sub_detail(request, pk):
     sub = get_object_or_404(Subject, pk=pk)
     ais = sub.additionalfile_set.all()
-
     context = {'sub': sub, 'ais': ais}
     return render(request, 'main/profile_sub_detail.html', context)
 
 
 @user_required
+@student_required
+def student_sub_detail(request, pk):
+    sub = get_object_or_404(Subject, pk=pk)
+    sh = get_object_or_404(Schedule, group=request.user.group.pk)
+    shs = AdditionalSchedule.objects.filter(schedule=sh, subject=sub)
+    name_for_teacher = []
+    for sh in shs:
+        if sh not in name_for_teacher:
+            name_for_teacher.append(sh.teacher.full_name())
+    length_name_for_teach = len(name_for_teacher)
+    ais = sub.additionalfile_set.all()
+    context = {'sub': sub, 'ais': ais, 'name_for_teacher': name_for_teacher,
+               'length_name_for_teach': length_name_for_teach}
+    return render(request, 'main/profile_sub_detail.html', context)
+
+
+@user_required
+@user_is_entry_to_group
 def profile_bb_detail(request, pk):
     bb = get_object_or_404(Bb, pk=pk)
     ais = bb.additionalimage_set.all()
     comments = Comment.objects.filter(bb=pk, is_active=True)
     initial = {'bb': bb.pk}
     if request.user.is_authenticated:
-        initial['author'] = request.user.username
+        initial['author'] = request.user.pk
         form_class = UserCommentForm
     else:
         form_class = UserCommentForm
@@ -505,38 +520,57 @@ def student_schedule(request):
 @user_required
 @student_required
 def student_subjects(request):
+    sbs_only = []
     sbs = AdditionalSchedule.objects.filter(schedule__group=request.user.group)
-    paginator = Paginator(sbs, 8)
+    for sb in sbs:
+        if sb not in sbs_only:
+            sbs_only.append([sb.subject.name_of_subject, int(sb.subject.pk), ])
+    sbs_unique = []
+    for elem in sbs_only:
+        if elem not in sbs_unique:
+            sbs_unique.append(elem)
+    sbs_only = sbs_unique
+    paginator = Paginator(sbs_only, 8)
     if 'page' in request.GET:
         page_num = request.GET['page']
     else:
         page_num = 1
     page = paginator.get_page(page_num)
-    context = {'page': page, 'sbs': page.object_list}
+    context = {'page': page, 'sbs_only': page.object_list}
     return render(request, 'main/subjects.html', context)
 
 
 @user_required
 @teacher_required
 def teacher_subjects(request):
-    sbs = AdditionalSchedule.objects.filter(teacher=request.user.pk)
-    paginator = Paginator(sbs, 8)
+    sbs_only = []
+    sbs = AdditionalSchedule.objects.filter(teacher=request.user.pk).order_by('subject')
+    for sb in sbs:
+        if sb not in sbs_only:
+            sbs_only.append([sb.subject.name_of_subject, int(sb.subject.pk)])
+    sbs_unique = []
+    for elem in sbs_only:
+        if elem not in sbs_unique:
+            sbs_unique.append(elem)
+    sbs_only = sbs_unique
+
+    paginator = Paginator(sbs_only, 8)
     if 'page' in request.GET:
         page_num = request.GET['page']
     else:
         page_num = 1
     page = paginator.get_page(page_num)
-    context = {'page': page, 'sbs': page.object_list}
+    context = {'page': page, 'sbs_only': page.object_list}
     return render(request, 'main/subjects.html', context)
 
 
 def login_page(request):
     form = LoginForm
     if request.method == 'POST':
-        username = request.POST.get('username')
+        email = request.POST.get('email')
         password = request.POST.get('password')
 
-        user = authenticate(request, username=username, password=password)
+        user = authenticate(request, email=email, password=password)
 
         if user is not None and user.is_teacher:
             login(request, user)

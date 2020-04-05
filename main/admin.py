@@ -148,7 +148,7 @@ class TeacherAdmin(admin.ModelAdmin):
     list_display = ('full_name', 'is_activated', 'date_joined')
     search_fields = ('first_name', 'last_name', 'middle_name')
     list_filter = (NonactivatedFilter,)
-    fields = (('username', 'email'), ('first_name', 'last_name', 'middle_name'),
+    fields = (('email', 'first_name', 'last_name', 'middle_name'),
               ('send_messages', 'is_active', 'is_activated', 'is_teacher'),
               ('position', 'degree', 'rank'),
               ('last_login', 'date_joined'))
@@ -170,7 +170,7 @@ class AdvUserAdmin(admin.ModelAdmin):
     list_display = ('full_name', 'is_activated', 'date_joined',)
     search_fields = ('email', 'first_name', 'last_name')
     list_filter = (NonactivatedFilter,)
-    fields = (('username', 'email'), ('first_name', 'last_name', 'group'),
+    fields = (('email', 'first_name', 'last_name', 'group'),
               ('is_active', 'is_activated'),
               ('last_login', 'date_joined'))
     readonly_fields = ('last_login', 'date_joined')

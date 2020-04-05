@@ -5,7 +5,7 @@
 {% block title %}Удаление пользователя{% endblock %}
 
 {% block content %}
-<h2>Удаление пользователя {{ object.username }}</h2>
+<h2>Удаление пользователя {{ object.full_name }}</h2>
 <form method="post">
     {% csrf_token %}
     {% buttons submit='Удалить' %}{% endbuttons %}

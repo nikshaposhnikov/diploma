@@ -29,9 +29,9 @@
         </div>
     {% endif %}
     {% if user.is_teacher %}
-    <p><a href="{% url 'main:profile' %}">Назад</a></p>
+        <p><a href="{% url 'main:profile' %}">Назад</a></p>
     {% else %}
-    <p><a href="{% url 'main:student_profile' %}">Назад</a></p>
+        <p><a href="{% url 'main:student_profile' %}">Назад</a></p>
     {% endif %}
     <h4 class="mt-5">Новый комментарий</h4>
     <form method="post">
@@ -43,25 +43,29 @@
         <div class="mt-5">
             {% for comment in comments %}
                 <div class="my-2 p-2 border">
-                    <h5>{{ comment.author }}</h5>
+                    {% if comment.author.is_teacher %}
+                        <h5>{{ comment.author.teacher.full_name }}</h5>
+                    {% else %}
+                        <h5>{{ comment.author.full_name }}</h5>
+                    {% endif %}
                     <p>{{ comment.content }}</p>
                     <p class="text-right font-italic">{{ comment.created_at }}</p>
                     <p class="text-right mt-2">
-                            {% if bb.author.pk == user.pk and comment.author == user.username %}
-                                <a href="{% url 'main:comment_change' group_pk=comment.bb.group.pk bb_pk=comment.bb.pk pk=comment.pk %}">
-                                    Исправить комментарий</a>
-                                <a href="{% url 'main:comment_delete' group_pk=comment.bb.group.pk bb_pk=comment.bb.pk pk=comment.pk %}">
-                                    Удалить комментарий</a>
-                            {% elif comment.author == user.username %}
-                                <a href="{% url 'main:comment_change' group_pk=comment.bb.group.pk bb_pk=comment.bb.pk pk=comment.pk %}">
-                                    Исправить комментарий</a>
-                                <a href="{% url 'main:comment_delete' group_pk=comment.bb.group.pk bb_pk=comment.bb.pk pk=comment.pk %}">
-                                    Удалить комментарий</a>
-                            {% elif bb.author.pk == user.pk %}
-                                <a href="{% url 'main:comment_delete' group_pk=comment.bb.group.pk bb_pk=comment.bb.pk pk=comment.pk %}">
-                                    Удалить комментарий</a>
-                            {% endif %}
-                        </p>
+                        {% if bb.author.pk == user.pk and comment.author.pk == user.pk %}
+                            <a href="{% url 'main:comment_change' group_pk=comment.bb.group.pk bb_pk=comment.bb.pk pk=comment.pk %}">
+                                Исправить комментарий</a>
+                            <a href="{% url 'main:comment_delete' group_pk=comment.bb.group.pk bb_pk=comment.bb.pk pk=comment.pk %}">
+                                Удалить комментарий</a>
+                        {% elif comment.author.pk == user.pk %}
+                            <a href="{% url 'main:comment_change' group_pk=comment.bb.group.pk bb_pk=comment.bb.pk pk=comment.pk %}">
+                                Исправить комментарий</a>
+                            <a href="{% url 'main:comment_delete' group_pk=comment.bb.group.pk bb_pk=comment.bb.pk pk=comment.pk %}">
+                                Удалить комментарий</a>
+                        {% elif bb.author.pk == user.pk %}
+                            <a href="{% url 'main:comment_delete' group_pk=comment.bb.group.pk bb_pk=comment.bb.pk pk=comment.pk %}">
+                                Удалить комментарий</a>
+                        {% endif %}
+                    </p>
                 </div>
             {% endfor %}
         </div>

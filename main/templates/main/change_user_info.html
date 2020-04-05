@@ -5,7 +5,7 @@
 {% block title %}Правка личных данных{% endblock %}
 
 {% block content %}
-    <h2>Правка личных данных пользователя {{ user.username }}</h2>
+    <h2>Правка личных данных пользователя {{ user.get_user_name }}</h2>
     {% if user.is_teacher %}
         <form method="post">
             {% csrf_token %}

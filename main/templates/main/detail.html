@@ -10,12 +10,8 @@
         <div class="row">
             {% if bb.image %}
                 <div class="col-md-auto"><img src="{{ bb.image.url }}" class="main-image">
-                    {% if bb.author.first_name and bb.author.last_name and bb.author.teacher.middle_name %}
-                        <p>Автор: {{ bb.author.last_name }} {{ bb.author.first_name }}
-                            {{ bb.author.teacher.middle_name }}</p>
-                    {% else %}
-                        <p class="text-right font-italic">Автор: {{ bb.author.username }}</p>
-                    {% endif %}
+                    <p>Автор: {{ bb.author.last_name }} {{ bb.author.first_name }}
+                        {{ bb.author.teacher.middle_name }}</p>
                 </div>
             {% endif %}
             <div class="col">
@@ -36,11 +32,10 @@
         </div>
     {% endif %}
     {% if user.is_teacher %}
-    <p><a href="{% url 'main:by_group' pk=bb.group.pk %}{{ all }}">Назад</a></p>
+        <p><a href="{% url 'main:by_group' pk=bb.group.pk %}{{ all }}">Назад</a></p>
     {% else %}
-    <p><a href="{% url 'main:index' %}">Назад</a></p>
+        <p><a href="{% url 'main:index' %}">Назад</a></p>
     {% endif %}
-    {% if user.is_authenticated %}
         <h4 class="mt-5">Новый комментарий</h4>
         <form method="post">
             {% csrf_token %}
@@ -51,16 +46,20 @@
             <div class="mt-5">
                 {% for comment in comments %}
                     <div class="my-2 p-2 border">
-                        <h5>{{ comment.author }}</h5>
+                    {% if comment.author.is_teacher %}
+                        <h5>{{ comment.author.teacher.full_name }}</h5>
+                    {% else %}
+                        <h5>{{ comment.author.full_name }}</h5>
+                    {% endif %}
                         <p>{{ comment.content }}</p>
                         <p class="text-right font-italic">{{ comment.created_at }}</p>
                         <p class="text-right mt-2">
-                            {% if bb.author.pk == user.pk and comment.author == user.username %}
+                            {% if bb.author.pk == user.pk and comment.author.full_name == user.full_name %}
                                 <a href="{% url 'main:comment_change' group_pk=comment.bb.group.pk bb_pk=comment.bb.pk pk=comment.pk %}">
                                     Исправить комментарий</a>
                                 <a href="{% url 'main:comment_delete' group_pk=comment.bb.group.pk bb_pk=comment.bb.pk pk=comment.pk %}">
                                     Удалить комментарий</a>
-                            {% elif comment.author == user.username %}
+                            {% elif comment.author.full_name == user.full_name %}
                                 <a href="{% url 'main:comment_change' group_pk=comment.bb.group.pk bb_pk=comment.bb.pk pk=comment.pk %}">
                                     Исправить комментарий</a>
                                 <a href="{% url 'main:comment_delete' group_pk=comment.bb.group.pk bb_pk=comment.bb.pk pk=comment.pk %}">
@@ -74,17 +73,4 @@
                 {% endfor %}
             </div>
         {% endif %}
-    {% else %}
-        {% if comments %}
-            <div class="mt-5">
-                {% for comment in comments %}
-                    <div class="my-2 p-2 border">
-                        <h5>{{ comment.author }}</h5>
-                        <p>{{ comment.content }}</p>
-                        <p class="text-right font-italic">{{ comment.created_at }}</p>
-                    </div>
-                {% endfor %}
-            </div>
-        {% endif %}
-    {% endif %}
 {% endblock %}

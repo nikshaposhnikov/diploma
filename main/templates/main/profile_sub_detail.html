@@ -32,6 +32,11 @@
         {% endif %}
         <p><a href="{% url 'main:teacher_subjects' %}">Назад</a></p>
     {% else %}
+        {% if length_name_for_teach > 1 %}
+            <h4>Преподаватели - {{ name_for_teacher.0 }}, {{ name_for_teacher.1 }}</h4>
+        {% else %}
+            <h4>Преподаватель - {{ name_for_teacher.0 }}</h4>
+        {% endif %}
         {% if ais %}
             <div class="d-flex justify-content-between flex-wrap mt-5">
                 <p>Материалы к дисциплине:</p>

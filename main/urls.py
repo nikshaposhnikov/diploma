@@ -48,6 +48,7 @@ urlpatterns = [
 
     # Student functionality
     path('accounts/profile/student_subjects/', student_subjects, name='student_subjects'),
+    path('accounts/profile/student_subject/<int:pk>/', student_sub_detail, name='student_sub_detail'),
     path('accounts/profile/student_schedule/', student_schedule, name='student_schedule'),
     path('accounts/student_profile/', student_profile, name='student_profile'),
     path('accounts/profile/change/', ChangeUserInfoView.as_view(), name='profile_change'),

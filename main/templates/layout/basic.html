@@ -64,13 +64,12 @@
 <div class="row">
     {% if user.is_anonymous %}
         <nav class="col-md-auto nav flex-column border">
-            <a class="nav-link root" href="{% url 'main:index' %}">Главная</a>
+            <a class="nav-link root" href="{% url 'main:index' %}">Общие объявления</a>
             <a class="nav-link root" href="{% url 'main:list_schedule' %}">Расписание</a>
             <a class="nav-link root" href="{% url 'main:other' page='about' %}">О сайте</a>
         </nav>
     {% elif user.is_teacher %}
         <nav class="col-md-auto nav flex-column border">
-            <a class="nav-link root" href="{% url 'main:index' %}">Главная</a>
             {% for group in groups %}
                 {% ifchanged group.super_group.pk %}
                     <span class="nav-link root font-weight-bold">
@@ -82,7 +81,7 @@
         </nav>
     {% else %}
         <nav class="col-md-auto nav flex-column border">
-            <a class="nav-link root" href="{% url 'main:index' %}">Главная</a>
+            <a class="nav-link root" href="{% url 'main:index' %}">Общие объявления</a>
             <a class="nav-link root" href="{% url 'main:student_profile' %}">Объявления для моей группы</a>
             <a class="nav-link root" href="{% url 'main:other' page='about' %}">О сайте</a>
         </nav>

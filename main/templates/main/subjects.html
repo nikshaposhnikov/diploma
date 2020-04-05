@@ -14,17 +14,17 @@
             <p>Дисциплины пользователя {{ user.last_name }} {{ user.first_name }}
                 {{ user.teacher.middle_name }}</p>
         {% else %}
-            <p>Дисциплины пользователя {{ user.username }}</p>
+            <p>Дисциплины пользователя {{ user.get_full_name }}</p>
         {% endif %}
-        {% if sbs %}
+        {% if sbs_only %}
             <h3>Ваши дисциплины</h3>
             <ul class="list-unstyled">
-                {% for sb in sbs %}
+                {% for sb in sbs_only %}
                     <li class="media my-5 p-3 border">
-                        {% url 'main:profile_sub_detail' pk=sb.subject.pk as url %}
+                        {% url 'main:profile_sub_detail' pk=sb.1 as url %}
                         <a href="{{ url }}"></a>
                         <div class="media-body">
-                            <a href="{{ url }}">{{ sb.subject.name_of_subject }}</a>
+                            <a href="{{ url }}">{{ sb.0 }}</a>
                         </div>
                     </li>
                 {% endfor %}
@@ -35,19 +35,15 @@
                 от администратора сайта</h3>
         {% endif %}
     {% else %}
-        {% if sbs %}
+        {% if sbs_only %}
             <p>Дисциплины группы {{ user.group }}</p>
             <ul class="list-unstyled">
-                {% for sb in sbs %}
-                    <li class="media my-5 p-3 border">
-                        {% url 'main:profile_sub_detail' pk=sb.subject.pk as url %}
+                {% for sb in sbs_only %}
+                    <li class="media my-5  border">
+                        {% url 'main:student_sub_detail' pk=sb.1 as url %}
                         <a href="{{ url }}"></a>
                         <div class="media-body">
-                            <a href="{{ url }}">{{ sb.subject.name_of_subject }}</a>
-                        </div>
-                        <div class="media-body">
-                            <p>Преподаватель: {{ sb.teacher.last_name }} {{ sb.teacher.first_name }}
-                                {{ sb.teacher.middle_name }}</p>
+                            <a href="{{ url }}">{{ sb.0 }}</a>
                         </div>
                     </li>
                 {% endfor %}

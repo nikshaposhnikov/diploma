@@ -8,6 +8,7 @@ from django.dispatch import Signal
 from django.db import models
 from django.contrib.auth.models import AbstractUser
 from django.db.models.signals import post_save
+from django.utils.translation import gettext_lazy as _
 from django.contrib import messages
 import datetime
 from django.core.exceptions import ValidationError
@@ -134,7 +135,7 @@ class AdditionalFile(models.Model):
 
 class Comment(models.Model):
     bb = models.ForeignKey('Bb', on_delete=models.CASCADE, verbose_name='Объявление')
-    author = models.CharField(max_length=30, verbose_name='Автор')
+    author = models.ForeignKey('AdvUser', on_delete=models.CASCADE, verbose_name='Автор')
     content = models.TextField(verbose_name='Содержание')
     is_active = models.BooleanField(default=True, db_index=True, verbose_name='Выводить на экран?')
     created_at = models.DateTimeField(auto_now_add=True, db_index=True, verbose_name='Опубликован')
@@ -252,13 +253,16 @@ user_registrated.connect(user_registrated_dispatcher)
 
 
 class AdvUser(AbstractUser):
+    USERNAME_FIELD = 'email'
+    email = models.EmailField(_('email address'), unique=True)  # changes email to unique and blank to false
+    REQUIRED_FIELDS = []  # removes email from REQUIRED_FIELDS
     group = models.ForeignKey('SubGroup', on_delete=models.PROTECT, null=True, verbose_name='Группа')
     is_teacher = models.BooleanField(default=False, verbose_name='Преподаватель')
     is_activated = models.BooleanField(default=True, db_index=True, verbose_name='Прошел активацию?')
     send_messages = models.BooleanField(default=True, verbose_name='Слать оповещания о новых комментариях?')
 
     def delete(self, *args, **kwargs):
-        Comment.objects.filter(author=self.username).delete()
+        Comment.objects.filter(author=self.pk).delete()
         super().delete(*args, **kwargs)
 
     def full_name(obj):
@@ -279,7 +283,7 @@ class Teacher(AdvUser):
     rank = models.CharField(max_length=40, blank=True, verbose_name='Звание')
 
     def delete(self, *args, **kwargs):
-        Comment.objects.filter(author=self.username).delete()
+        Comment.objects.filter(author=self.pk).delete()
         for bb in self.bb_set.all():
             bb.delete()
         super().delete(*args, **kwargs)
@@ -292,7 +296,7 @@ class Teacher(AdvUser):
     class Meta(AbstractUser.Meta):
         verbose_name_plural = 'Преподаватели'
         verbose_name = 'Преподаватель'
-        ordering = ['username']
+        ordering = ['last_name', 'first_name', 'middle_name']
 
 
 def notify_student(sender, instance, created, **kwargs):
