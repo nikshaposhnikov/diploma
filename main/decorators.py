@@ -8,7 +8,6 @@ def user_is_entry_author(function):
     def wrap(request, *args, **kwargs):
         comment = Comment.objects.get(pk=kwargs['pk'])
         bb = Bb.objects.get(pk=kwargs['bb_pk'])
-        print(request.user.full_name)
         if bb.author.pk == request.user.pk or comment.author.pk == request.user.pk:
             return function(request, *args, **kwargs)
         else:
@@ -22,7 +21,6 @@ def user_is_entry_author(function):
 def user_is_entry_to_group(function):
     def wrap(request, *args, **kwargs):
         bb = Bb.objects.get(pk=kwargs['pk'])
-        print(request.user.full_name)
         if bb.group.pk == request.user.group.pk:
             return function(request, *args, **kwargs)
         else:
