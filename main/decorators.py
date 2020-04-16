@@ -21,7 +21,7 @@ def user_is_entry_author(function):
 def user_is_entry_to_group(function):
     def wrap(request, *args, **kwargs):
         bb = Bb.objects.get(pk=kwargs['pk'])
-        if bb.group.pk == request.user.group.pk:
+        if bb.author.pk == request.user.pk or bb.group.pk == request.user.group.pk:
             return function(request, *args, **kwargs)
         else:
             raise PermissionDenied

@@ -463,9 +463,344 @@ def detail_schedule(request, pk):
                                                                                   'start_time')
     sbs_saturday = AdditionalSchedule.objects.filter(schedule=pk, day='5').order_by('day',
                                                                                     'start_time')
-    context = {'sh': sh, 'ais': ais, 'sbs_monday': sbs_monday, 'sbs_tuesday': sbs_tuesday,
-               'sbs_wednesday': sbs_wednesday,
-               'sbs_thursday': sbs_thursday, 'sbs_friday': sbs_friday, 'sbs_saturday': sbs_saturday, }
+
+    '''
+   ALL LESSONS IN MONDAY
+    '''
+    first_lessonM = []
+    second_lessonM = []
+    third_lessonM = []
+    fourth_lessonM = []
+    fifth_lessonM = []
+    sixth_lessonM = []
+    schedule_monday = []
+    for sb in sbs_monday:
+        if sb not in schedule_monday:
+            schedule_monday.append(
+                [sb.start_time, sb.subject.name_of_subject, sb.teacher.last_name,
+                 sb.teacher.first_name,
+                 sb.teacher.middle_name, sb.structure.structure_name, sb.auditory.auditory_number])
+    for items in schedule_monday:
+        if items[0] == '08:30:00':
+            first_lessonM.append(
+                [items[0], items[1], items[2],
+                 items[3],
+                 items[4], items[5], items[6]])
+    for items in schedule_monday:
+        if items[0] == '10:25:00':
+            second_lessonM.append(
+                [items[0], items[1], items[2],
+                 items[3],
+                 items[4], items[5], items[6]])
+    for items in schedule_monday:
+        if items[0] == '12:35:00':
+            third_lessonM.append(
+                [items[0], items[1], items[2],
+                 items[3],
+                 items[4], items[5], items[6]])
+    for items in schedule_monday:
+        if items[0] == '14:30:00':
+            fourth_lessonM.append(
+                [items[0], items[1], items[2],
+                 items[3],
+                 items[4], items[5], items[6]])
+    for items in schedule_monday:
+        if items[0] == '16:25:00':
+            fifth_lessonM.append(
+                [items[0], items[1], items[2],
+                 items[3],
+                 items[4], items[5], items[6]])
+    for items in schedule_monday:
+        if items[0] == '18:10:00':
+            sixth_lessonM.append(
+                [items[0], items[1], items[2],
+                 items[3],
+                 items[4], items[5], items[6]])
+
+    '''
+      ALL LESSONS IN TUESDAY
+    '''
+    first_lessonTU = []
+    second_lessonTU = []
+    third_lessonTU = []
+    fourth_lessonTU = []
+    fifth_lessonTU = []
+    sixth_lessonTU = []
+    schedule_tuesday = []
+    for sb in sbs_tuesday:
+        if sb not in schedule_tuesday:
+            schedule_tuesday.append(
+                [sb.start_time, sb.subject.name_of_subject, sb.teacher.last_name,
+                 sb.teacher.first_name,
+                 sb.teacher.middle_name, sb.structure.structure_name, sb.auditory.auditory_number])
+    for items in schedule_tuesday:
+        if items[0] == '08:30:00':
+            first_lessonTU.append(
+                [items[0], items[1], items[2],
+                 items[3],
+                 items[4], items[5], items[6]])
+    for items in schedule_tuesday:
+        if items[0] == '10:25:00':
+            second_lessonTU.append(
+                [items[0], items[1], items[2],
+                 items[3],
+                 items[4], items[5], items[6]])
+    for items in schedule_tuesday:
+        if items[0] == '12:35:00':
+            third_lessonTU.append(
+                [items[0], items[1], items[2],
+                 items[3],
+                 items[4], items[5], items[6]])
+    for items in schedule_tuesday:
+        if items[0] == '14:30:00':
+            fourth_lessonTU.append(
+                [items[0], items[1], items[2],
+                 items[3],
+                 items[4], items[5], items[6]])
+    for items in schedule_tuesday:
+        if items[0] == '16:25:00':
+            fifth_lessonTU.append(
+                [items[0], items[1], items[2],
+                 items[3],
+                 items[4], items[5], items[6]])
+    for items in schedule_tuesday:
+        if items[0] == '18:10:00':
+            sixth_lessonTU.append(
+                [items[0], items[1], items[2],
+                 items[3],
+                 items[4], items[5], items[6]])
+
+        '''
+          ALL LESSONS IN WEDNESDAY
+        '''
+    first_lessonW = []
+    second_lessonW = []
+    third_lessonW = []
+    fourth_lessonW = []
+    fifth_lessonW = []
+    sixth_lessonW = []
+    schedule_wednesday = []
+    for sb in sbs_wednesday:
+        if sb not in schedule_wednesday:
+            schedule_wednesday.append(
+                [sb.start_time, sb.subject.name_of_subject, sb.teacher.last_name,
+                 sb.teacher.first_name,
+                 sb.teacher.middle_name, sb.structure.structure_name, sb.auditory.auditory_number])
+    for items in schedule_wednesday:
+        if items[0] == '08:30:00':
+            first_lessonW.append(
+                [items[0], items[1], items[2],
+                 items[3],
+                 items[4], items[5], items[6]])
+    for items in schedule_wednesday:
+        if items[0] == '10:25:00':
+            second_lessonW.append(
+                [items[0], items[1], items[2],
+                 items[3],
+                 items[4], items[5], items[6]])
+    for items in schedule_wednesday:
+        if items[0] == '12:35:00':
+            third_lessonW.append(
+                [items[0], items[1], items[2],
+                 items[3],
+                 items[4], items[5], items[6]])
+    for items in schedule_wednesday:
+        if items[0] == '14:30:00':
+            fourth_lessonW.append(
+                [items[0], items[1], items[2],
+                 items[3],
+                 items[4], items[5], items[6]])
+    for items in schedule_wednesday:
+        if items[0] == '16:25:00':
+            fifth_lessonW.append(
+                [items[0], items[1], items[2],
+                 items[3],
+                 items[4], items[5], items[6]])
+    for items in schedule_wednesday:
+        if items[0] == '18:10:00':
+            sixth_lessonW.append(
+                [items[0], items[1], items[2],
+                 items[3],
+                 items[4], items[5], items[6]])
+
+        '''
+             ALL LESSONS IN THURSDAY
+        '''
+    first_lessonTH = []
+    second_lessonTH = []
+    third_lessonTH = []
+    fourth_lessonTH = []
+    fifth_lessonTH = []
+    sixth_lessonTH = []
+    schedule_thursday = []
+    for sb in sbs_thursday:
+        if sb not in schedule_thursday:
+            schedule_thursday.append(
+                [sb.start_time, sb.subject.name_of_subject, sb.teacher.last_name,
+                 sb.teacher.first_name,
+                 sb.teacher.middle_name, sb.structure.structure_name, sb.auditory.auditory_number])
+    for items in schedule_thursday:
+        if items[0] == '08:30:00':
+            first_lessonTH.append(
+                [items[0], items[1], items[2],
+                 items[3],
+                 items[4], items[5], items[6]])
+    for items in schedule_thursday:
+        if items[0] == '10:25:00':
+            second_lessonTH.append(
+                [items[0], items[1], items[2],
+                 items[3],
+                 items[4], items[5], items[6]])
+    for items in schedule_thursday:
+        if items[0] == '12:35:00':
+            third_lessonTH.append(
+                [items[0], items[1], items[2],
+                 items[3],
+                 items[4], items[5], items[6]])
+    for items in schedule_thursday:
+        if items[0] == '14:30:00':
+            fourth_lessonTH.append(
+                [items[0], items[1], items[2],
+                 items[3],
+                 items[4], items[5], items[6]])
+    for items in schedule_thursday:
+        if items[0] == '16:25:00':
+            fifth_lessonTH.append(
+                [items[0], items[1], items[2],
+                 items[3],
+                 items[4], items[5], items[6]])
+    for items in schedule_thursday:
+        if items[0] == '18:10:00':
+            sixth_lessonTH.append(
+                [items[0], items[1], items[2],
+                 items[3],
+                 items[4], items[5], items[6]])
+
+        '''
+             ALL LESSONS IN FRIDAY
+        '''
+    first_lessonF = []
+    second_lessonF = []
+    third_lessonF = []
+    fourth_lessonF = []
+    fifth_lessonF = []
+    sixth_lessonF = []
+    schedule_friday = []
+    for sb in sbs_friday:
+        if sb not in schedule_friday:
+            schedule_friday.append(
+                [sb.start_time, sb.subject.name_of_subject, sb.teacher.last_name,
+                 sb.teacher.first_name,
+                 sb.teacher.middle_name, sb.structure.structure_name, sb.auditory.auditory_number])
+    for items in schedule_friday:
+        if items[0] == '08:30:00':
+            first_lessonF.append(
+                [items[0], items[1], items[2],
+                 items[3],
+                 items[4], items[5], items[6]])
+    for items in schedule_friday:
+        if items[0] == '10:25:00':
+            second_lessonF.append(
+                [items[0], items[1], items[2],
+                 items[3],
+                 items[4], items[5], items[6]])
+    for items in schedule_friday:
+        if items[0] == '12:35:00':
+            third_lessonF.append(
+                [items[0], items[1], items[2],
+                 items[3],
+                 items[4], items[5], items[6]])
+    for items in schedule_friday:
+        if items[0] == '14:30:00':
+            fourth_lessonF.append(
+                [items[0], items[1], items[2],
+                 items[3],
+                 items[4], items[5], items[6]])
+    for items in schedule_friday:
+        if items[0] == '16:25:00':
+            fifth_lessonF.append(
+                [items[0], items[1], items[2],
+                 items[3],
+                 items[4], items[5], items[6]])
+    for items in schedule_friday:
+        if items[0] == '18:10:00':
+            sixth_lessonF.append(
+                [items[0], items[1], items[2],
+                 items[3],
+                 items[4], items[5], items[6]])
+
+            '''
+                 ALL LESSONS IN SATURDAY
+            '''
+    first_lessonS = []
+    second_lessonS = []
+    third_lessonS = []
+    fourth_lessonS = []
+    fifth_lessonS = []
+    sixth_lessonS = []
+    schedule_saturday = []
+    for sb in sbs_saturday:
+        if sb not in schedule_saturday:
+            schedule_saturday.append(
+                [sb.start_time, sb.subject.name_of_subject, sb.teacher.last_name,
+                 sb.teacher.first_name,
+                 sb.teacher.middle_name, sb.structure.structure_name, sb.auditory.auditory_number])
+    for items in schedule_saturday:
+        if items[0] == '08:30:00':
+            first_lessonS.append(
+                [items[0], items[1], items[2],
+                 items[3],
+                 items[4], items[5], items[6]])
+    for items in schedule_saturday:
+        if items[0] == '10:25:00':
+            second_lessonS.append(
+                [items[0], items[1], items[2],
+                 items[3],
+                 items[4], items[5], items[6]])
+    for items in schedule_saturday:
+        if items[0] == '12:35:00':
+            third_lessonS.append(
+                [items[0], items[1], items[2],
+                 items[3],
+                 items[4], items[5], items[6]])
+    for items in schedule_saturday:
+        if items[0] == '14:30:00':
+            fourth_lessonS.append(
+                [items[0], items[1], items[2],
+                 items[3],
+                 items[4], items[5], items[6]])
+    for items in schedule_saturday:
+        if items[0] == '16:25:00':
+            fifth_lessonS.append(
+                [items[0], items[1], items[2],
+                 items[3],
+                 items[4], items[5], items[6]])
+    for items in schedule_saturday:
+        if items[0] == '18:10:00':
+            sixth_lessonS.append(
+                [items[0], items[1], items[2],
+                 items[3],
+                 items[4], items[5], items[6]])
+
+    context = {'sh': sh, 'ais': ais,
+               'sbs_monday': sbs_monday, 'first_lesson': first_lessonM, 'second_lesson': second_lessonM,
+               'third_lesson': third_lessonM, 'fourth_lesson': fourth_lessonM, 'fifth_lesson': fifth_lessonM,
+               'sixth_lesson': sixth_lessonM,
+               'sbs_tuesday': sbs_tuesday, 'first_lessonTU': first_lessonTU, 'second_lessonTU': second_lessonTU,
+               'third_lessonTU': third_lessonTU, 'fourth_lessonTU': fourth_lessonTU, 'fifth_lessonTU': fifth_lessonTU,
+               'sixth_lessonTU': sixth_lessonTU,
+               'sbs_wednesday': sbs_wednesday, 'first_lessonW': first_lessonW, 'second_lessonW': second_lessonW,
+               'third_lessonW': third_lessonW, 'fourth_lessonW': fourth_lessonW, 'fifth_lessonW': fifth_lessonW,
+               'sixth_lessonW': sixth_lessonW,
+               'sbs_thursday': sbs_thursday, 'first_lessonTH': first_lessonTH, 'second_lessonTH': second_lessonTH,
+               'third_lessonTH': third_lessonTH, 'fourth_lessonTH': fourth_lessonTH, 'fifth_lessonTH': fifth_lessonTH,
+               'sixth_lessonTH': sixth_lessonTH,
+               'sbs_friday': sbs_friday, 'first_lessonF': first_lessonF, 'second_lessonF': second_lessonF,
+               'third_lessonF': third_lessonF, 'fourth_lessonF': fourth_lessonF, 'fifth_lessonF': fifth_lessonF,
+               'sixth_lessonF': sixth_lessonF,
+               'sbs_saturday': sbs_saturday, 'first_lessonS': first_lessonS, 'second_lessonS': second_lessonS,
+               'third_lessonS': third_lessonS, 'fourth_lessonS': fourth_lessonS, 'fifth_lessonS': fifth_lessonS,
+               'sixth_lessonS': sixth_lessonS}
     return render(request, 'main/detail_schedule.html', context)
 
 
@@ -488,32 +823,342 @@ def student_schedule(request):
     sbs_saturday = AdditionalSchedule.objects.filter(schedule__group=request.user.group, day='5').order_by('day',
                                                                                                            'start_time')
 
-    scheduler = {}
-
-    for items in sbs:
-        if items.day not in scheduler:
-            scheduler[items.day] = [{
-                field: value for field, value in vars(items).items() if not field.startswith('day')
-            }]
-        else:
-            scheduler[items.day] += [{
-                field: value for field, value in vars(items).items() if not field.startswith('day')
-            }]
-
-    schedule = []
-    for sb in sbs:
-        if sb.day not in schedule:
-            schedule.append(
-                [sb.get_day_display, sb.start_time, sb.subject.name_of_subject, sb.teacher.last_name,
+    '''
+       ALL LESSONS IN MONDAY
+        '''
+    first_lessonM = []
+    second_lessonM = []
+    third_lessonM = []
+    fourth_lessonM = []
+    fifth_lessonM = []
+    sixth_lessonM = []
+    schedule_monday = []
+    for sb in sbs_monday:
+        if sb not in schedule_monday:
+            schedule_monday.append(
+                [sb.start_time, sb.subject.name_of_subject, sb.teacher.last_name,
                  sb.teacher.first_name,
                  sb.teacher.middle_name, sb.structure.structure_name, sb.auditory.auditory_number])
+    for items in schedule_monday:
+        if items[0] == '08:30:00':
+            first_lessonM.append(
+                [items[0], items[1], items[2],
+                 items[3],
+                 items[4], items[5], items[6]])
+    for items in schedule_monday:
+        if items[0] == '10:25:00':
+            second_lessonM.append(
+                [items[0], items[1], items[2],
+                 items[3],
+                 items[4], items[5], items[6]])
+    for items in schedule_monday:
+        if items[0] == '12:35:00':
+            third_lessonM.append(
+                [items[0], items[1], items[2],
+                 items[3],
+                 items[4], items[5], items[6]])
+    for items in schedule_monday:
+        if items[0] == '14:30:00':
+            fourth_lessonM.append(
+                [items[0], items[1], items[2],
+                 items[3],
+                 items[4], items[5], items[6]])
+    for items in schedule_monday:
+        if items[0] == '16:25:00':
+            fifth_lessonM.append(
+                [items[0], items[1], items[2],
+                 items[3],
+                 items[4], items[5], items[6]])
+    for items in schedule_monday:
+        if items[0] == '18:10:00':
+            sixth_lessonM.append(
+                [items[0], items[1], items[2],
+                 items[3],
+                 items[4], items[5], items[6]])
 
     '''
-    GET CERTAIN SUBJECTS ON CERTAIN DAYS
+      ALL LESSONS IN TUESDAY
     '''
+    first_lessonTU = []
+    second_lessonTU = []
+    third_lessonTU = []
+    fourth_lessonTU = []
+    fifth_lessonTU = []
+    sixth_lessonTU = []
+    schedule_tuesday = []
+    for sb in sbs_tuesday:
+        if sb not in schedule_tuesday:
+            schedule_tuesday.append(
+                [sb.start_time, sb.subject.name_of_subject, sb.teacher.last_name,
+                 sb.teacher.first_name,
+                 sb.teacher.middle_name, sb.structure.structure_name, sb.auditory.auditory_number])
+    for items in schedule_tuesday:
+        if items[0] == '08:30:00':
+            first_lessonTU.append(
+                [items[0], items[1], items[2],
+                 items[3],
+                 items[4], items[5], items[6]])
+    for items in schedule_tuesday:
+        if items[0] == '10:25:00':
+            second_lessonTU.append(
+                [items[0], items[1], items[2],
+                 items[3],
+                 items[4], items[5], items[6]])
+    for items in schedule_tuesday:
+        if items[0] == '12:35:00':
+            third_lessonTU.append(
+                [items[0], items[1], items[2],
+                 items[3],
+                 items[4], items[5], items[6]])
+    for items in schedule_tuesday:
+        if items[0] == '14:30:00':
+            fourth_lessonTU.append(
+                [items[0], items[1], items[2],
+                 items[3],
+                 items[4], items[5], items[6]])
+    for items in schedule_tuesday:
+        if items[0] == '16:25:00':
+            fifth_lessonTU.append(
+                [items[0], items[1], items[2],
+                 items[3],
+                 items[4], items[5], items[6]])
+    for items in schedule_tuesday:
+        if items[0] == '18:10:00':
+            sixth_lessonTU.append(
+                [items[0], items[1], items[2],
+                 items[3],
+                 items[4], items[5], items[6]])
 
-    context = {'sbs': sbs, 'sbs_monday': sbs_monday, 'sbs_tuesday': sbs_tuesday, 'sbs_wednesday': sbs_wednesday,
-               'sbs_thursday': sbs_thursday, 'sbs_friday': sbs_friday, 'sbs_saturday': sbs_saturday, }
+        '''
+          ALL LESSONS IN WEDNESDAY
+        '''
+    first_lessonW = []
+    second_lessonW = []
+    third_lessonW = []
+    fourth_lessonW = []
+    fifth_lessonW = []
+    sixth_lessonW = []
+    schedule_wednesday = []
+    for sb in sbs_wednesday:
+        if sb not in schedule_wednesday:
+            schedule_wednesday.append(
+                [sb.start_time, sb.subject.name_of_subject, sb.teacher.last_name,
+                 sb.teacher.first_name,
+                 sb.teacher.middle_name, sb.structure.structure_name, sb.auditory.auditory_number])
+    for items in schedule_wednesday:
+        if items[0] == '08:30:00':
+            first_lessonW.append(
+                [items[0], items[1], items[2],
+                 items[3],
+                 items[4], items[5], items[6]])
+    for items in schedule_wednesday:
+        if items[0] == '10:25:00':
+            second_lessonW.append(
+                [items[0], items[1], items[2],
+                 items[3],
+                 items[4], items[5], items[6]])
+    for items in schedule_wednesday:
+        if items[0] == '12:35:00':
+            third_lessonW.append(
+                [items[0], items[1], items[2],
+                 items[3],
+                 items[4], items[5], items[6]])
+    for items in schedule_wednesday:
+        if items[0] == '14:30:00':
+            fourth_lessonW.append(
+                [items[0], items[1], items[2],
+                 items[3],
+                 items[4], items[5], items[6]])
+    for items in schedule_wednesday:
+        if items[0] == '16:25:00':
+            fifth_lessonW.append(
+                [items[0], items[1], items[2],
+                 items[3],
+                 items[4], items[5], items[6]])
+    for items in schedule_wednesday:
+        if items[0] == '18:10:00':
+            sixth_lessonW.append(
+                [items[0], items[1], items[2],
+                 items[3],
+                 items[4], items[5], items[6]])
+
+        '''
+             ALL LESSONS IN THURSDAY
+        '''
+    first_lessonTH = []
+    second_lessonTH = []
+    third_lessonTH = []
+    fourth_lessonTH = []
+    fifth_lessonTH = []
+    sixth_lessonTH = []
+    schedule_thursday = []
+    for sb in sbs_thursday:
+        if sb not in schedule_thursday:
+            schedule_thursday.append(
+                [sb.start_time, sb.subject.name_of_subject, sb.teacher.last_name,
+                 sb.teacher.first_name,
+                 sb.teacher.middle_name, sb.structure.structure_name, sb.auditory.auditory_number])
+    for items in schedule_thursday:
+        if items[0] == '08:30:00':
+            first_lessonTH.append(
+                [items[0], items[1], items[2],
+                 items[3],
+                 items[4], items[5], items[6]])
+    for items in schedule_thursday:
+        if items[0] == '10:25:00':
+            second_lessonTH.append(
+                [items[0], items[1], items[2],
+                 items[3],
+                 items[4], items[5], items[6]])
+    for items in schedule_thursday:
+        if items[0] == '12:35:00':
+            third_lessonTH.append(
+                [items[0], items[1], items[2],
+                 items[3],
+                 items[4], items[5], items[6]])
+    for items in schedule_thursday:
+        if items[0] == '14:30:00':
+            fourth_lessonTH.append(
+                [items[0], items[1], items[2],
+                 items[3],
+                 items[4], items[5], items[6]])
+    for items in schedule_thursday:
+        if items[0] == '16:25:00':
+            fifth_lessonTH.append(
+                [items[0], items[1], items[2],
+                 items[3],
+                 items[4], items[5], items[6]])
+    for items in schedule_thursday:
+        if items[0] == '18:10:00':
+            sixth_lessonTH.append(
+                [items[0], items[1], items[2],
+                 items[3],
+                 items[4], items[5], items[6]])
+
+        '''
+             ALL LESSONS IN FRIDAY
+        '''
+    first_lessonF = []
+    second_lessonF = []
+    third_lessonF = []
+    fourth_lessonF = []
+    fifth_lessonF = []
+    sixth_lessonF = []
+    schedule_friday = []
+    for sb in sbs_friday:
+        if sb not in schedule_friday:
+            schedule_friday.append(
+                [sb.start_time, sb.subject.name_of_subject, sb.teacher.last_name,
+                 sb.teacher.first_name,
+                 sb.teacher.middle_name, sb.structure.structure_name, sb.auditory.auditory_number])
+    for items in schedule_friday:
+        if items[0] == '08:30:00':
+            first_lessonF.append(
+                [items[0], items[1], items[2],
+                 items[3],
+                 items[4], items[5], items[6]])
+    for items in schedule_friday:
+        if items[0] == '10:25:00':
+            second_lessonF.append(
+                [items[0], items[1], items[2],
+                 items[3],
+                 items[4], items[5], items[6]])
+    for items in schedule_friday:
+        if items[0] == '12:35:00':
+            third_lessonF.append(
+                [items[0], items[1], items[2],
+                 items[3],
+                 items[4], items[5], items[6]])
+    for items in schedule_friday:
+        if items[0] == '14:30:00':
+            fourth_lessonF.append(
+                [items[0], items[1], items[2],
+                 items[3],
+                 items[4], items[5], items[6]])
+    for items in schedule_friday:
+        if items[0] == '16:25:00':
+            fifth_lessonF.append(
+                [items[0], items[1], items[2],
+                 items[3],
+                 items[4], items[5], items[6]])
+    for items in schedule_friday:
+        if items[0] == '18:10:00':
+            sixth_lessonF.append(
+                [items[0], items[1], items[2],
+                 items[3],
+                 items[4], items[5], items[6]])
+
+            '''
+                 ALL LESSONS IN SATURDAY
+            '''
+    first_lessonS = []
+    second_lessonS = []
+    third_lessonS = []
+    fourth_lessonS = []
+    fifth_lessonS = []
+    sixth_lessonS = []
+    schedule_saturday = []
+    for sb in sbs_saturday:
+        if sb not in schedule_saturday:
+            schedule_saturday.append(
+                [sb.start_time, sb.subject.name_of_subject, sb.teacher.last_name,
+                 sb.teacher.first_name,
+                 sb.teacher.middle_name, sb.structure.structure_name, sb.auditory.auditory_number])
+    for items in schedule_saturday:
+        if items[0] == '08:30:00':
+            first_lessonS.append(
+                [items[0], items[1], items[2],
+                 items[3],
+                 items[4], items[5], items[6]])
+    for items in schedule_saturday:
+        if items[0] == '10:25:00':
+            second_lessonS.append(
+                [items[0], items[1], items[2],
+                 items[3],
+                 items[4], items[5], items[6]])
+    for items in schedule_saturday:
+        if items[0] == '12:35:00':
+            third_lessonS.append(
+                [items[0], items[1], items[2],
+                 items[3],
+                 items[4], items[5], items[6]])
+    for items in schedule_saturday:
+        if items[0] == '14:30:00':
+            fourth_lessonS.append(
+                [items[0], items[1], items[2],
+                 items[3],
+                 items[4], items[5], items[6]])
+    for items in schedule_saturday:
+        if items[0] == '16:25:00':
+            fifth_lessonS.append(
+                [items[0], items[1], items[2],
+                 items[3],
+                 items[4], items[5], items[6]])
+    for items in schedule_saturday:
+        if items[0] == '18:10:00':
+            sixth_lessonS.append(
+                [items[0], items[1], items[2],
+                 items[3],
+                 items[4], items[5], items[6]])
+
+    context = {'sbs': sbs, 'sbs_monday': sbs_monday, 'first_lesson': first_lessonM, 'second_lesson': second_lessonM,
+               'third_lesson': third_lessonM, 'fourth_lesson': fourth_lessonM, 'fifth_lesson': fifth_lessonM,
+               'sixth_lesson': sixth_lessonM,
+               'sbs_tuesday': sbs_tuesday, 'first_lessonTU': first_lessonTU, 'second_lessonTU': second_lessonTU,
+               'third_lessonTU': third_lessonTU, 'fourth_lessonTU': fourth_lessonTU, 'fifth_lessonTU': fifth_lessonTU,
+               'sixth_lessonTU': sixth_lessonTU,
+               'sbs_wednesday': sbs_wednesday, 'first_lessonW': first_lessonW, 'second_lessonW': second_lessonW,
+               'third_lessonW': third_lessonW, 'fourth_lessonW': fourth_lessonW, 'fifth_lessonW': fifth_lessonW,
+               'sixth_lessonW': sixth_lessonW,
+               'sbs_thursday': sbs_thursday, 'first_lessonTH': first_lessonTH, 'second_lessonTH': second_lessonTH,
+               'third_lessonTH': third_lessonTH, 'fourth_lessonTH': fourth_lessonTH, 'fifth_lessonTH': fifth_lessonTH,
+               'sixth_lessonTH': sixth_lessonTH,
+               'sbs_friday': sbs_friday, 'first_lessonF': first_lessonF, 'second_lessonF': second_lessonF,
+               'third_lessonF': third_lessonF, 'fourth_lessonF': fourth_lessonF, 'fifth_lessonF': fifth_lessonF,
+               'sixth_lessonF': sixth_lessonF,
+               'sbs_saturday': sbs_saturday, 'first_lessonS': first_lessonS, 'second_lessonS': second_lessonS,
+               'third_lessonS': third_lessonS, 'fourth_lessonS': fourth_lessonS, 'fifth_lessonS': fifth_lessonS,
+               'sixth_lessonS': sixth_lessonS}
     return render(request, 'main/schedule.html', context)
 
 
