@@ -256,6 +256,7 @@ class AdvUser(AbstractUser):
     USERNAME_FIELD = 'email'
     email = models.EmailField(_('email address'), unique=True)  # changes email to unique and blank to false
     REQUIRED_FIELDS = []  # removes email from REQUIRED_FIELDS
+    username = models.CharField(max_length=40, unique=False, default='')
     group = models.ForeignKey('SubGroup', on_delete=models.PROTECT, null=True, verbose_name='Группа')
     is_teacher = models.BooleanField(default=False, verbose_name='Преподаватель')
     is_activated = models.BooleanField(default=True, db_index=True, verbose_name='Прошел активацию?')
