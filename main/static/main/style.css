@@ -73,6 +73,16 @@ body {
     text-decoration: none;
 }
 
+.navigation__item-link.user-name {
+    text-transform: none;
+    font-size: 16px;
+    letter-spacing: 1px;
+}
+
+.dropdown-menu.show {
+    left: -2rem !important;
+}
+
 .main {
     display: flex;
     height: 100%;
@@ -110,12 +120,5 @@ body {
     color: black;
     background-color: white;
     flex: 1 0 auto;
-}
-
-.footer {
-    /*display: flex;*/
-    /*position: absolute;*/
-    /*justify-content: flex-end;*/
-    /*bottom: 0;*/
-    /*width: 100%;*/
+    padding-left: 2rem;
 }
