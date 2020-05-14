@@ -95,6 +95,7 @@ body {
     width: 20%;
     max-width: 17.5rem;
     padding-top: 2rem;
+    border-right: 1px solid;
 }
 
 .sidebar_item {
@@ -113,14 +114,17 @@ body {
     text-decoration: none;
 }
 
-.adverts_container {
+.main-info_container {
     display: flex;
     flex-direction: column;
-    width: 80%;
     color: black;
+    flex: 1;
+}
+
+.ads-page {
     background-color: white;
-    flex: 1 0 auto;
     padding-left: 2rem;
+    flex: 1;
 }
 
 .ads__container {
@@ -163,6 +167,7 @@ body {
 
 .ads-item__author {
     font-size: 14px;
+    font-style: italic;
 }
 
 .ads-item__content-container {
@@ -176,6 +181,7 @@ body {
     width: 8.75rem;
     margin-bottom: 2rem;
     padding: 6px 0;
+    color: white;
 }
 
 .ads-item__button:hover,
@@ -240,4 +246,73 @@ body {
     display: flex;
     justify-content: flex-end;
     padding-right: 2rem;
+}
+
+.schedule-list {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    background-color: #243b7f;
+    flex: 1;
+}
+
+.schedule-list__item {
+    background-color: white;
+    border-radius: 5px;
+    padding: 0.625rem 20px;
+    margin-bottom: 1rem;
+}
+
+.schedule-list__item-link {
+    color: black;
+}
+
+.schedule-list__header {
+    width: 100%;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    padding-top: 2rem;
+}
+
+.schedule-list__header-name {
+    color: white;
+    font-size: 30px;
+    font-weight: bold;
+}
+
+.schedule-list__container {
+    padding-top: 2rem;
+}
+
+.schedule {
+    display: flex;
+    flex-direction: column;
+    flex: 1;
+    align-items: center;
+    background-color: white;
+}
+
+.schedule th {
+    text-align: center;
+    padding: 0.5rem;
+}
+
+.schedule__name {
+    font-size: 30px;
+    font-weight: bold;
+}
+
+.schedule__header {
+    padding: 2rem 0;
+}
+
+.to-schedule-list {
+    background-color: #169bd6;
+    border-color: #169bd6;
+    border-radius: 5px;
+    width: 15rem;
+    margin-bottom: 2rem;
+    padding: 6px 0;
+    color: white;
 }
