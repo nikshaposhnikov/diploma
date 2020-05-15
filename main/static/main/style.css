@@ -185,7 +185,11 @@ body {
 }
 
 .ads-item__button:hover,
-.ads__search-form .btn-primary:hover {
+.ads__search-form .btn-primary:hover,
+.button-i-am-teacher:hover,
+.to-schedule-list:hover,
+.form-group .btn.btn-primary:hover,
+.return-btn:hover {
     background-color: #168bd6;
 }
 
@@ -314,5 +318,72 @@ body {
     width: 15rem;
     margin-bottom: 2rem;
     padding: 6px 0;
+    color: white;
+}
+
+.about__container,
+.registration {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    padding-top: 2rem;
+}
+
+.about__name,
+.registration__name {
+    color: white;
+    font-size: 30px;
+    font-weight: bold;
+}
+
+.about__info {
+    font-size: 18px;
+    padding: 2rem;
+    color: white;
+}
+
+.registration__form {
+    display: flex;
+    padding-top: 2rem;
+    color: white;
+}
+
+.button-i-am-teacher,
+.form-group .btn.btn-primary {
+    background-color: #169bd6;
+    border-color: #169bd6;
+    border-radius: 5px;
+    width: 15rem;
+    margin-bottom: 2rem;
+    padding: 6px 0;
+    color: white;
+}
+
+.form-text.text-muted {
+    display: none;
+}
+
+.form-group .btn.btn-primary {
+    margin: 1rem 0 0 0;
+}
+
+.form-group {
+    display: flex;
+    justify-content: center;
+}
+
+.registration__form.registration__form-teacher {
+    padding-top: 1rem;
+}
+
+.registration__buttons {
+    padding-top: 1rem;
+}
+
+.return-btn {
+    background-color: #169bd6;
+    border-color: #169bd6;
+    border-radius: 5px;
+    width: 8rem;
     color: white;
 }
