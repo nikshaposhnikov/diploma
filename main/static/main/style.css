@@ -186,7 +186,7 @@ body {
 
 .ads-item__button:hover,
 .ads__search-form .btn-primary:hover,
-.button-i-am-teacher:hover,
+.btn-i-am-teacher:hover,
 .to-schedule-list:hover,
 .form-group .btn.btn-primary:hover,
 .return-btn:hover {
@@ -348,8 +348,9 @@ body {
     color: white;
 }
 
-.button-i-am-teacher,
-.form-group .btn.btn-primary {
+.btn-i-am-teacher,
+.form-group .btn.btn-primary,
+.btn-forgot-password{
     background-color: #169bd6;
     border-color: #169bd6;
     border-radius: 5px;

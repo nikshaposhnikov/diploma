@@ -5,16 +5,26 @@
 {% block title %}Вход{% endblock %}
 
 {% block content %}
-    <h2>Вход</h2>
+<div class="registration">
+    <div class="registration__header">
+        <p class="registration__name">Вход</p>
+    </div>
     {% if user.is_authenticated %}
+    <div class="about__info">
         <p>Вы уже выполнили вход.</p>
+    </div>
     {% else %}
+    <div class="registration__form">
         <form method="post">
             {% csrf_token %}
             {% bootstrap_form form layout='horizontal' %}
             <input type="hidden" name="text" value="{{ next }}">
             {% buttons submit='Войти' %} {% endbuttons %}
         </form>
-        <p><a href="{% url 'main:password_reset' %}">Забыли пароль?</a></p>
-    {% endif %}
+    </div>
+    <a href="{% url 'main:password_reset' %}">
+        <button class="btn-forgot-password">Забыли пароль?</button>
+    </a>
+</div>
+{% endif %}
 {% endblock %}
