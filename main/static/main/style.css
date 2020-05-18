@@ -344,17 +344,18 @@ body {
 
 .registration__form {
     display: flex;
+    flex-direction: column;
     padding-top: 2rem;
     color: white;
 }
 
 .btn-i-am-teacher,
 .form-group .btn.btn-primary,
-.btn-forgot-password{
+.btn-forgot-password {
     background-color: #169bd6;
     border-color: #169bd6;
     border-radius: 5px;
-    width: 15rem;
+    width: 14rem;
     margin-bottom: 2rem;
     padding: 6px 0;
     color: white;
@@ -370,7 +371,6 @@ body {
 
 .form-group {
     display: flex;
-    justify-content: center;
 }
 
 .registration__form.registration__form-teacher {
@@ -387,4 +387,60 @@ body {
     border-radius: 5px;
     width: 8rem;
     color: white;
+}
+
+.registration__form-forgot-password {
+    align-self: flex-end;
+}
+
+.registration__form-item {
+    display: flex;
+    flex-direction: column;
+}
+
+.registration__btn-container {
+    align-self: flex-end;
+}
+
+.teacher-name {
+    color: white;
+    font-size: 18px;
+}
+
+.studying-files__name {
+    color: white;
+    font-size: 16px;
+    padding-top: 1rem;
+}
+
+.studying-files__container {
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    padding-top: 1rem;
+}
+
+.studying-files__item {
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+    align-items: center;
+    padding: 0 2rem;
+}
+
+.studying-files__item-img {
+    width: 100px;
+}
+
+.studying-files__item-link,
+.studying-files__item-size {
+    color: white;
+}
+
+.studying-files__item-link:hover {
+    color: #169bd6;
+}
+
+.studying-files__item-link-container {
+    padding: 10px 0;
 }

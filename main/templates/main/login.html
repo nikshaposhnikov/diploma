@@ -15,16 +15,20 @@
     </div>
     {% else %}
     <div class="registration__form">
-        <form method="post">
+        <form method="post" class="registration__form-item">
             {% csrf_token %}
             {% bootstrap_form form layout='horizontal' %}
             <input type="hidden" name="text" value="{{ next }}">
-            {% buttons submit='Войти' %} {% endbuttons %}
+            <div class="registration__btn-container">
+                {% buttons submit='Войти' %} {% endbuttons %}
+            </div>
         </form>
+        <div class="registration__form-forgot-password">
+            <a href="{% url 'main:password_reset' %}">
+                <button class="btn-forgot-password">Забыли пароль?</button>
+            </a>
+        </div>
     </div>
-    <a href="{% url 'main:password_reset' %}">
-        <button class="btn-forgot-password">Забыли пароль?</button>
-    </a>
 </div>
 {% endif %}
 {% endblock %}
