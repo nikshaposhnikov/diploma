@@ -27,7 +27,7 @@
         {% endif %}
         {% if user.is_authenticated %}
         {% if user.is_teacher %}
-        <a class="nav-link dropdown-toggle" data-toggle="dropdown" href="#"
+        <a class="nav-link dropdown-toggle navigation__item-link user-name" data-toggle="dropdown" href="#"
            role="button" aria-haspopup="true"
            aria-expanded="false">{{ user.last_name }}
             {{ user.first_name }} {{ user.teacher.middle_name }}</a>
@@ -75,16 +75,16 @@
             сайте</a></div>
 
         {% elif user.is_teacher %}
-        <nav class="col-md-auto nav flex-column border">
-            {% for group in groups %}
-            {% ifchanged group.super_group.pk %}
-            <span class="nav-link root font-weight-bold">
+        <!--        <nav class="col-md-auto nav flex-column border">-->
+        {% for group in groups %}
+        {% ifchanged group.super_group.pk %}
+        <span class="nav-link root font-weight-bold">
                 {{ group.super_group.name }}</span>
-            {% endifchanged %}
-            <a class="nav-link" href="{% url 'main:by_group' pk=group.pk %}">
-                {{ group.name|slice:16 }}</a>
-            {% endfor %}
-        </nav>
+        {% endifchanged %}
+        <div class="sidebar_item"><a class="sidebar_item-link" href="{% url 'main:by_group' pk=group.pk %}">
+            {{ group.name|slice:16 }}</a></div>
+        {% endfor %}
+        <!--        </nav>-->
         {% else %}
         <div class="sidebar_item"><a class="sidebar_item-link" href="{% url 'main:index' %}">Общие объявления</a></div>
         <div class="sidebar_item"><a class="sidebar_item-link" href="{% url 'main:student_profile' %}">Объявления
@@ -100,8 +100,5 @@
         {% endblock %}
     </section>
 </main>
-<!--<footer class="footer">-->
-<!--    <p class="text-right font-italic">&copy; преподаватели, студенты 2019 г.</p>-->
-<!--</footer>-->
 </body>
 </html>

@@ -157,6 +157,7 @@ body {
     justify-content: flex-start;
     align-items: flex-start;
     padding-left: 1.5rem;
+    max-width: 50%;
 }
 
 .ads-item__info-name {
@@ -189,7 +190,10 @@ body {
 .btn-i-am-teacher:hover,
 .to-schedule-list:hover,
 .form-group .btn.btn-primary:hover,
-.return-btn:hover {
+.return-btn:hover,
+.btn-add-ads:hover,
+.btn-delete-ads:hover,
+.btn-edit-ads:hover{
     background-color: #168bd6;
 }
 
@@ -389,6 +393,15 @@ body {
     color: white;
 }
 
+.btn-add-ads {
+    background-color: #169bd6;
+    border-color: #169bd6;
+    border-radius: 5px;
+    width: 14rem;
+    color: white;
+    margin:0.5rem 0;
+}
+
 .registration__form-forgot-password {
     align-self: flex-end;
 }
@@ -443,4 +456,27 @@ body {
 
 .studying-files__item-link-container {
     padding: 10px 0;
+}
+
+.white-bg {
+    background-color: white;
+}
+
+.ads-detail .ads-item__content-container {
+    flex-grow: 1;
+    word-wrap: break-word;
+    max-width: 80%;
+}
+.btn-delete-ads,
+.btn-edit-ads{
+    background-color: #169bd6;
+    border-color: #169bd6;
+    border-radius: 5px;
+    width: 12rem;
+    margin-bottom: 2rem;
+    color: white;
+    padding: 3px 0;
+}
+.header-names_teacher-info{
+    padding-top: 1rem;
 }
