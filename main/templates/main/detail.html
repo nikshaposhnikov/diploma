@@ -32,9 +32,10 @@
         </div>
     {% endif %}
     {% if user.is_teacher %}
-        <p><a href="{% url 'main:by_group' pk=bb.group.pk %}{{ all }}">Назад</a></p>
+        <p><a href="{% url 'main:by_group' pk=bb.group.pk %}{{ all }}">        <button class="btn-cancel">Назад</button>
+        </a></p>
     {% else %}
-        <p><a href="{% url 'main:index' %}">Назад</a></p>
+        <p><a href="{% url 'main:index' %}"> <button class="btn-cancel">Назад</button></a></p>
     {% endif %}
         <h4 class="mt-5">Новый комментарий</h4>
         <form method="post">

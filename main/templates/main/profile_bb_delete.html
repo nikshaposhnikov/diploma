@@ -12,6 +12,8 @@
         {% csrf_token %}
         {% buttons submit='Удалить' %}{% endbuttons %}
     </form>
+    <a href="{% url 'main:profile' %}">
+        <button class="btn-cancel">Отмена</button>
+    </a>
 </div>
-<p><a href="{% url 'main:profile' %}">Отмена</a></p>
 {% endblock %}

@@ -9,7 +9,6 @@
     <div class="registration__header">
         <p class="registration__name">Правка личных данных пользователя {{ user.get_user_name }}</p>
     </div>
-    <h2></h2>
     {% if user.is_teacher %}
     <div class="registration__form">
         <form method="post">
@@ -18,7 +17,9 @@
             {% buttons submit='Сохранить' %}{% endbuttons %}
         </form>
     </div>
-    <p><a href="{% url 'main:profile' %}">Отмена</a></p>
+    <p><a href="{% url 'main:profile' %}">
+        <button class="btn-cancel edit-teacher-info">Отмена</button>
+    </a></p>
     {% else %}
     <div class="registration__form">
         <form method="post">
@@ -27,7 +28,9 @@
             {% buttons submit='Сохранить' %}{% endbuttons %}
         </form>
     </div>
-    <p><a href="{% url 'main:student_profile' %}">Отмена</a></p>
+    <p><a href="{% url 'main:student_profile' %}">
+        <button class="btn-cancel edit-teacher-info">Отмена</button>
+    </a></p>
 </div>
 {% endif %}
 {% endblock %}

@@ -30,7 +30,7 @@
     {% else %}
     <h5>На данный момент вы не добавляли никаких дополнительных материалов</h5>
     {% endif %}
-    <p><a href="{% url 'main:teacher_subjects' %}">Назад</a></p>
+    <p><a href="{% url 'main:teacher_subjects' %}"> <button class="btn-cancel">Назад</button></a></p>
     {% else %}
     {% if length_name_for_teach > 1 %}
     <p class="teacher-name">Преподаватели - {{ name_for_teacher.0 }}, {{ name_for_teacher.1 }}</p>
@@ -59,7 +59,7 @@
     {% else %}
     <p class="studying-files__name">На данный момент дополнительных материалов нет</p>
     {% endif %}
-    <p><a href="{% url 'main:student_subjects' %}">Назад</a></p>
+    <p><a href="{% url 'main:student_subjects' %}"> <button class="btn-cancel">Назад</button></a></p>
     <div class="about__info">
     </div>
 </div>
